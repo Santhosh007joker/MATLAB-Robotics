@@ -32,7 +32,7 @@ inflate(map,0.3)
 show(map)
 ```
 
-<img src="Occupancymap.png" alt="Occupancy Map" width="50%"/>
+<img src="imgs/Occupancymap.png" alt="Occupancy Map" width="50%"/>
 
 `setOccupancy` marks specific world coordinates as occupied (1) or free (0), and `inflate` grows every occupied cell outward by a given radius. This is how we bake in clearance for the robot's physical size before planning a path through the map. 
 
@@ -67,7 +67,7 @@ plot(solnInfo.TreeData(:,1),solnInfo.TreeData(:,2),'.-')   % tree expansion
 plot(pathObj.States(:,1),pathObj.States(:,2),'r-','LineWidth',2)  % final path
 ```
 
-<img src="RRT.png" width="50%"/>
+<img src="imgs/RRT.png" width="50%"/>
 
 Swap `plannerRRT` for `plannerRRTStar` if you want the planner to keep optimizing the path after first reaching the goal — useful when path *quality*, not just feasibility, matters.
 
@@ -87,7 +87,7 @@ hold on
 plot(optimalInfo.TreeData(:,1),optimalInfo.TreeData(:,2),'.-')
 plot(optimalPath.States(:,1),optimalPath.States(:,2),'g-','LineWidth',2)
 ```
-<img src="rrts.png" width="50%"/>
+<img src="imgs/rrts.png" width="50%"/>
 
 The first `plannerRRT` snippet stops the moment it finds *any* valid path. This `plannerRRTStar` version keeps sampling and rewiring the tree for up to 2,000 iterations, even after the goal is reached, so the final path tends to be shorter and smoother instead of just "first thing that worked."
 

@@ -8,7 +8,7 @@
 
 **Robotics System Toolbox** handles the robot's body — kinematics, manipulators, mobile robot models. **Navigation Toolbox** handles the robot's brain: where it is, what its environment looks like, and how to move through that environment. In fact, Robotics System Toolbox leans on it directly — you can design customizable motion planners by leveraging Navigation Toolbox.
 
-This post skips the marketing-page summary and goes straight to building a map, planning a path, modeling sensors, doing SLAM, and planning in 3D. .
+This section covers planning a path, modeling sensors, doing SLAM, and planning in 3D. .
 
 ## 1. Build a Map: `occupancyMap`
 

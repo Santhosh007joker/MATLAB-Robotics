@@ -1,5 +1,5 @@
 # MATLAB-Robotics
-Imagine you are Tom Cruise. The Syndicate is on the loose, and the clock is already ticking. The mission is clear: track them down, disrupt their operation, and do it with gadgets that would make Q jealous. There's just one problem. The kind of hardware this mission demands doesn't come cheap. We're talking motor drives, sensor arrays, power systems, and precision control circuits that cost more to prototype than most people make in a year. You don't just wire those up on a breadboard and hope for the best. You have to simulate first: rigorously, completely, and with the same physics the real thing would obey. <br />
+Imagine Tom Cruise gets handed a new mission. The Syndicate is on the loose, and the clock is already ticking. The mission is clear: track them down, disrupt their operation, and do it with gadgets that would make Q jealous. There's just one problem. The kind of hardware this mission demands doesn't come cheap. We're talking motor drives, sensor arrays, power systems, and precision control circuits that cost more to prototype than most people make in a year. You don't just wire those up on a breadboard and hope for the best. You have to simulate first: rigorously, completely, and with the same physics the real thing would obey. <br />
 <br />
 **Now the question is : how exactly can we do that?**
 
@@ -177,7 +177,7 @@ With the electronics side covered, it's time to move up a level — from the cir
 # Image Processing in MATLAB
 
 
-Now imagine Tom Cruise is trying to hunt the syndicate, and in order to do that he wants to copy someone's face. How will he be able to do that? You remember watching these scenes as he takes out a machine to scan the needed face and prepares a highly accurate-looking mask for him. This is all possible due to the concept of image processing.
+Now during the mission Tom Cruise needs to copy someone's face. How will he be able to do that? You remember watching these scenes as he takes out a machine to scan the needed face and prepares a highly accurate-looking mask for him. This is all possible due to the concept of image processing.
 
 So to properly understand what is happening in the world of images in MATLAB, let's first look at how our computer perceives an image, and some very basic functions which will come in handy throughout our image processing journey.
 

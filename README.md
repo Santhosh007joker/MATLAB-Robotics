@@ -231,66 +231,6 @@ You can find the exact RGB values of a specific pixel using standard 2D matrix i
 img(120, 150, :)
 % Output: 255, 140, 60
 
-```markdown
-# Introduction to Image Processing in MATLAB
-
-Imagine Tom Cruise trying to hunt down the Syndicate. To do that, he needs to copy someone’s face. Remember those scenes where he pulls out a sleek machine to scan a target's face and instantly prints a highly accurate mask? That sci-fi magic is grounded in a very real concept: **Image Processing**.
-
-To truly understand how we manipulate the visual world using MATLAB, let's first explore how a computer perceives an image and learn the foundational functions that will serve as your toolkit throughout this journey.
-
----
-
-## How Computers See Images
-
-You are probably already familiar with **pixels**—the tiny dots that make up your display screen. Mathematically, an image is just a matrix of numerical values.
-
-For example, a tiny section of a grayscale image might look like this:
-
-$$
-\begin{matrix} 
-20 & 25 & 18 \\ 
-30 & 255 & 44 \\ 
-60 & 90 & 77 
-\end{matrix}
-$$
-
-Each number denotes the **brightness** of that specific pixel. The higher the number, the brighter the pixel. This matrix format is exactly how modern smartphone photographs, CCTV footage, satellite imagery, and medical scans are stored and processed.
-
-### Bit Depth
-An important concept to know is **Bit Depth**. For a standard 8-bit image, pixel values range from `0` to `255`, where `0` represents absolute black and `255` represents pure white.
-
----
-
-## Basic MATLAB Image Functions
-
-Let's dive into some MATLAB action. Here are the essential built-in functions you need to read, display, and analyze images:
-
-* `imread()`: Reads an image from your storage into MATLAB memory as a matrix.
-    ```matlab
-    img = imread('cars.png');
-    ```
-* `imshow()`: Displays the image in a figure window.
-    ```matlab
-    imshow(img);
-    ```
-* `size()`: Returns the dimensions of the image matrix.
-    ```matlab
-    size(img)
-    % Output: 384   512     3
-    ```
-    *This output means the image has 384 rows, 512 columns, and 3 color channels (Red, Green, Blue).*
-* `whos`: Displays detailed information about all active variables in your workspace.
-* `imfinfo()`: Fetches the technical metadata of an image file (such as format, resolution, and modification date).
-* `rgb2gray()`: Converts a standard color image to a single-channel grayscale image.
-* `impixelinfo()`: Turns on an interactive status bar tool that displays pixel coordinates and values as you hover your mouse over the image.
-
-### Extracting Specific Pixel Colors
-You can find the exact RGB values of a specific pixel using standard 2D matrix indexing:
-
-```matlab
-img(120, 150, :)
-% Output: 255, 140, 60
-
 ```
 
 This means the pixel located at **Row 120, Column 150** has an intensity of $R = 255$, $G = 140$, and $B = 60$.

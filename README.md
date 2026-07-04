@@ -1,7 +1,9 @@
 # MATLAB-Robotics
+Imagine you are Tom Cruise. The Syndicate is on the loose, and the clock is already ticking. The mission is clear: track them down, disrupt their operation, and do it with gadgets that would make Q jealous. There's just one problem. The kind of hardware this mission demands doesn't come cheap. We're talking motor drives, sensor arrays, power systems, and precision control circuits that cost more to prototype than most people make in a year. You don't just wire those up on a breadboard and hope for the best. You have to simulate first: rigorously, completely, and with the same physics the real thing would obey.
+<br />
+Now the question is : how exactly can we do that?
 
 # Matlab - The Basics
-Have you ever built a circuit, watched it do something weird, and thought "I bet there's a cleaner way to know why this is happening, instead of just poking at it with a multimeter and hoping"? That right there is basically the entire pitch for this post.
 
 <img src =imgs/matlab_logo.png width = "50%">
 If you've spent any time around circuit labs, embedded systems courses, or hardware prototyping benches, you've probably heard one name come up again and again: Matlab. It's got a reputation as the "engineer's calculator on steroids," and in various fields of engineering, it is used for a variety of operations and applications : from crunching raw numbers to simulating an entire physical system before a single wire gets soldered, the possibilities are endless.<br />

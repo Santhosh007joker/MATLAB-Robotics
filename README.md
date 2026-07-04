@@ -16,10 +16,9 @@ Before we go any further, let's get oriented because opening MATLAB for the firs
 <img src=imgs/interface.png>
 <br />
 Here's what you're actually looking at:
-* Current Folder (left panel) — this is your file browser. Whatever folder is open here is where MATLAB will look for your scripts and save your files. Keep this organised and you'll save yourself a lot of "where did that file go" moments later.
-* Command Window (centre, bottom) — this is where MATLAB lives and breathes. You can type commands directly here and run them instantly, without writing a full script. Great for quick calculations, testing a single line of code, or just checking what a variable looks like. Think of it as your scratch pad.
-* Workspace (right panel) — every variable you create, whether by running a script or typing directly into the Command Window, shows up here. Name, type, size, value — all listed out, so you can see exactly what's in memory at any given moment. When something isn't behaving the way you expect, the Workspace is usually the first place to look.
-* Editor (centre, top — opens when you create or open a script) — this is where you write actual MATLAB scripts and functions. Unlike the Command Window, code here doesn't run until you explicitly tell it to, which makes it the right place for anything longer than a couple of lines.
+* Current Folder (left , top) — this is your file browser. Whatever folder is open here is where MATLAB will look for your scripts and save your files. Keep this organised and you'll save yourself a lot of "where did that file go" moments later.
+* Command Window (centre, right) — this is where MATLAB lives and breathes. You can type commands directly here and run them instantly, without writing a full script. Great for quick calculations, testing a single line of code, or just checking what a variable looks like. Think of it as your scratch pad.
+* Workspace (bottom left) — every variable you create, whether by running a script or typing directly into the Command Window, shows up here. Name, type, size, value — all listed out, so you can see exactly what's in memory at any given moment. When something isn't behaving the way you expect, the Workspace is usually the first place to look.
 
 Here are some resources that explain the basics of Matlab in a slightly more comprehensive manner:
 * [Matlab Crash Course - By Younes Lab](https://youtu.be/sLxdNdC6Mds?si=20N6yzAYCiUGTa-O)

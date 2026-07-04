@@ -1,31 +1,39 @@
 # MATLAB-Robotics
 
-
+# Matlab - The Basics
 Have you ever built a circuit, watched it do something weird, and thought "I bet there's a cleaner way to know why this is happening, instead of just poking at it with a multimeter and hoping"? That right there is basically the entire pitch for this post.
 
+<img src = Matlab.png width = "50%">
 If you've spent any time around circuit labs, embedded systems courses, or hardware prototyping benches, you've probably heard one name come up again and again: **MATLAB**. It's got a reputation as the "engineer's calculator on steroids," and in various fields of engineering, it is used for a variety of operations and applications : from crunching raw numbers to simulating an entire physical system before a single wire gets soldered, the possibilities are endless.
 
-So what exactly is MATLAB?
+**So what exactly is MATLAB?**
 
 At its core, it's a numerical computing environment and programming language built around matrices (the name literally stands for **Matrix Laboratory**). That might sound abstract, but here's the thing a: huge chunk of engineering secretly is matrices. Solving a circuit with multiple nodes, tracking how a signal evolves over time or performing calculations that would take hours by hand are only a small fraction of the tasks that MATLAB can perform.
 
-# A Quick Look Around: The MATLAB Interface
+## A Quick Look Around: The MATLAB Interface
 Before we go any further, let's get oriented because opening MATLAB for the first time and staring at three panels you don't recognise is its own special kind of confusion.
 <img src=Interface.png width="50%">
 Here's what you're actually looking at:
-Current Folder (left panel) — this is your file browser. Whatever folder is open here is where MATLAB will look for your scripts and save your files. Keep this organised and you'll save yourself a lot of "where did that file go" moments later.
-Command Window (centre, bottom) — this is where MATLAB lives and breathes. You can type commands directly here and run them instantly, without writing a full script. Great for quick calculations, testing a single line of code, or just checking what a variable looks like. Think of it as your scratch pad.
-Workspace (right panel) — every variable you create, whether by running a script or typing directly into the Command Window, shows up here. Name, type, size, value — all listed out, so you can see exactly what's in memory at any given moment. When something isn't behaving the way you expect, the Workspace is usually the first place to look.
-Editor (centre, top — opens when you create or open a script) — this is where you write actual MATLAB scripts and functions. Unlike the Command Window, code here doesn't run until you explicitly tell it to, which makes it the right place for anything longer than a couple of lines.
+* Current Folder (left panel) — this is your file browser. Whatever folder is open here is where MATLAB will look for your scripts and save your files. Keep this organised and you'll save yourself a lot of "where did that file go" moments later.
+* Command Window (centre, bottom) — this is where MATLAB lives and breathes. You can type commands directly here and run them instantly, without writing a full script. Great for quick calculations, testing a single line of code, or just checking what a variable looks like. Think of it as your scratch pad.
+* Workspace (right panel) — every variable you create, whether by running a script or typing directly into the Command Window, shows up here. Name, type, size, value — all listed out, so you can see exactly what's in memory at any given moment. When something isn't behaving the way you expect, the Workspace is usually the first place to look.
+* Editor (centre, top — opens when you create or open a script) — this is where you write actual MATLAB scripts and functions. Unlike the Command Window, code here doesn't run until you explicitly tell it to, which makes it the right place for anything longer than a couple of lines.
 
-But MATLAB by itself is mostly about writing and running code line by line. So what do we do when we want to simulate an entire system, one which evolves over time, reacts to inputs and responds like the real thing would? Simulating such a system through code would be an incredibly tedious task. Thankfully, MATLAB provides us with a solution in the form of **Simulink**.
+Here are some resources that explain the basics of Matlab in a slightly more comprehensive manner:
+* [Matlab Crash Course - By Younes Lab](https://youtu.be/sLxdNdC6Mds?si=20N6yzAYCiUGTa-O)
+* [Complete Matlab Beginner Basics Course - By Phil Parisi](https://youtu.be/EtUCgn3T9eE?si=n-wQJrUJUJ3GnoKr)
+
+But as you can probably tell, MATLAB by itself is mostly about writing and running code line by line. So what do we do when we want to simulate an entire system, one which evolves over time, reacts to inputs and responds like the real thing would? Simulating such a system through code would be an incredibly tedious task. Thankfully, MATLAB provides us with a solution in the form of **Simulink**.
 
 ## Simulink
 
 Simulink is MATLAB's graphical simulation environment. Instead of writing everything as text-based code, you build your system as a block diagram : drag in a signal source, a controller, a plant model, wire them together, hit run, and watch the signals evolve on a virtual scope. It's the same underlying math as a MATLAB script, just represented visually, which turns out to be incredibly useful when a system has a lot of moving, interacting parts.
 
-Let's see how this actually works under the hood, because "drag blocks, wire them up" is doing a lot of hand-waving right now.
-Every Simulink system, no matter how complicated it eventually gets, boils down to just two things: **blocks and lines**. Blocks do the work : each one performs some operation, whether that's generating a signal, doing math on it, or just displaying it. Lines are the wires : they carry signals from one block's output straight into another block's input. That's genuinely it. Everything else is just more blocks and more lines, arranged in increasingly elaborate ways.
+Let's see how this actually works under the hood, because "drag blocks, wire them up" is doing a lot of hand-waving right now : 
+Every Simulink system, no matter how complicated it eventually gets, boils down to just two things: **blocks and lines**.
+Blocks do the work : each one performs some operation, whether that's generating a signal, doing math on it, or just displaying it. 
+Lines are the wires : they carry signals from one block's output straight into another block's input. 
+That's genuinely it. Everything else is just more blocks and more lines, arranged in increasingly elaborate ways.
 
 Now, blocks can generally be divided into three distinct categories and once you can spot which is which, reading any Simulink diagram gets a lot easier:
 
@@ -40,6 +48,7 @@ Now, within Simulink, there's a more specialized layer called Simscape. Where re
 
 <img src="imgs/Simscape.png" width="50%"/>
 For instance let’s look at this case: in Simulink, that's a block diagram doing the math behind springs and dampers; in Simscape, that's literally a Spring block and a Damper block, wired together the way you'd actually wire physical components on a bench. Same system, two completely different ways of representing it.
+
 So naturally, the question becomes: what happens when you want both at once? Say you've built your physical spring-damper setup in Simscape, but you want to feed its output into a Simulink controller, or plot i.t on a regular Simulink scope. Can you just... wire them together?
 WELL, not quite and here's why. Simulink blocks talk to each other using mathematical signals: plain numbers flowing along directional lines, one block's output becoming the next block's input. Simscape components, on the other hand, talk to each other through physical connections, think actual current flowing through a wire, or actual force transmitted through a mechanical joint, where the connection itself doesn't have a single "direction" the way a signal does. These two worlds speak fundamentally different languages, and you can't just slap a wire between them and expect MATLAB to figure out what you meant.
 

@@ -172,130 +172,131 @@ With the electronics side covered, it's time to move up a level — from the cir
 
 
 
+# Image Processing in MATLAB
+
+*Draft 1*
+
 Now imagine Tom Cruise is trying to hunt the syndicate, and in order to do that he wants to copy someone's face. How will he be able to do that? You remember watching these scenes as he takes out a machine to scan the needed face and prepares a highly accurate-looking mask for him. This is all possible due to the concept of image processing.
 
 So to properly understand what is happening in the world of images in MATLAB, let's first look at how our computer perceives an image, and some very basic functions which will come in handy throughout our image processing journey.
 
-How Computers See Images
+## How Computers See Images
 
 You probably know about pixels — the tiny dots on your display screen. Mathematically, these are numerical values that combine to form a digital image.
 
 For example:
 
+```
 20   25   18
 30  255   44
 60   90   77
+```
 
 This represents a tiny image where each number denotes the brightness of the pixel. The higher the number, the brighter the pixel.
 
 This is the format in which modern smartphone photographs, CCTV footage, satellite imagery, and other visual media are stored.
 
-One more key thing to know is Bit Depth. For an 8-bit image, 255 is the brightest and 0 is the blackest pixel.
+One more key thing to know is **Bit Depth**. For an 8-bit image, 255 is the brightest and 0 is the blackest pixel.
 
-Basic MATLAB Image Functions
+## Basic MATLAB Image Functions
 
 After this, let's see some MATLAB action using what we know about images, and see how we display, read, and get to know about the image. Here are the essential functions you must know:
 
-imread()
-
+### `imread()`
 Reads an image from your computer into MATLAB memory as a matrix.
+```matlab
+img = imread('cars.png');
+```
 
-matlabimg = imread('cars.png');
-
-imshow()
-
+### `imshow()`
 Displays the image on your screen.
 
-size()
-
+### `size()`
 Returns the dimensions of an image.
-
-matlabsize(img)
+```matlab
+size(img)
 % Output: 384   512     3
-
+```
 This means the image has 384 rows, 512 columns, and 3 color channels (RGB).
 
-whos
-
+### `whos`
 Displays detailed information about your variables in the workspace.
 
-imfinfo()
-
+### `imfinfo()`
 Displays the metadata of an image file.
 
-rgb2gray()
-
+### `rgb2gray()`
 Converts a color image to grayscale.
 
-impixelinfo()
-
+### `impixelinfo()`
 Provides a tool to display pixel values interactively when hovering over an image.
 
-Extracting Specific Pixel Colors
-
+### Extracting Specific Pixel Colors
 You can find the RGB values of a specific pixel using matrix coordinates, just your 2D coordinates.
-
-matlabimg(120,150,:)
+```matlab
+img(120,150,:)
 % Output: 255, 140, 60
-
+```
 The pixel at row 120 and column 150 has Red = 255, Green = 140, and Blue = 60.
 
+> I would highly suggest booting up MATLAB and trying the above commands with a picture of your choice.
 
-I would highly suggest booting up MATLAB and trying the above commands with a picture of your choice.
-
-
-
-I have taken the above image as a reference. It's a grayscale image, named cars.png.
+*I have taken the above image as a reference. It's a grayscale image, named `cars.png`.*
 
 Now, after you have tried all the commands with an image of your choice, let's see the types of images and the formats in which they are stored in MATLAB.
 
-Image Types & Storage
+## Image Types & Storage
 
 There are three primary ways images are stored:
 
+- **Grayscale Images**: Contains only intensity (brightness) information.
+- **RGB Images**: Most standard photographs are color images. Instead of storing one value per pixel, an RGB image stores three values (Red, Green, and Blue). MATLAB stores RGB images as a 3D matrix.
+- **Binary Images**: Sometimes we only care whether a pixel belongs to an object or the background. We use 0 for background and 1 for object.
 
-Grayscale Images: Contains only intensity (brightness) information.
-RGB Images: Most standard photographs are color images. Instead of storing one value per pixel, an RGB image stores three values (Red, Green, and Blue). MATLAB stores RGB images as a 3D matrix.
-Binary Images: Sometimes we only care whether a pixel belongs to an object or the background. We use 0 for background and 1 for object.
+### Common MATLAB Data Types
 
-
-Common MATLAB Data Types
-
-Data TypeRangeTypical Useuint80 – 255Most standard imagesuint160 – 65535Medical and scientific imagingdouble0 – 1Image processing algorithmssingleFloating-pointDeep learning & heavy calculationslogical0 or 1Binary images
+| Data Type | Range | Typical Use |
+|---|---|---|
+| `uint8` | 0 – 255 | Most standard images |
+| `uint16` | 0 – 65535 | Medical and scientific imaging |
+| `double` | 0 – 1 | Image processing algorithms |
+| `single` | Floating-point | Deep learning & heavy calculations |
+| `logical` | 0 or 1 | Binary images |
 
 You can always use MATLAB functions to convert between these formats and save memory:
-
-matlabgray = rgb2gray(img);
+```matlab
+gray = rgb2gray(img);
 bw = imbinarize(gray);
 imgDouble = im2double(img);
 imgUint8 = im2uint8(imgDouble);
+```
 
 After knowing how images are stored and converted, the very next step is to know about colors. We're all familiar with RGB and grayscale, but what are some other ways we can represent color in an image?
 
-Color Spaces
+## Color Spaces
 
-Identifying a specific shade (like the yellow shine of a car) can be tough in standard RGB. This is where the HSV color space comes in.
+Identifying a specific shade (like the yellow shine of a car) can be tough in standard RGB. This is where the **HSV** color space comes in.
 
-
-H (Hue): The actual color.
-S (Saturation): How vivid or pure the color is.
-V (Value): The brightness.
-
+- **H (Hue)**: The actual color.
+- **S (Saturation)**: How vivid or pure the color is.
+- **V (Value)**: The brightness.
 
 HSV separates color from brightness. As a result, it might not look appealing to us, but for a machine, this is easier to understand.
 
-matlabhsvImage = rgb2hsv(img);
+```matlab
+hsvImage = rgb2hsv(img);
 imshow(hsvImage);
 
 H = hsvImage(:,:,1);
 S = hsvImage(:,:,2);
 V = hsvImage(:,:,3);
+```
 
 Other common color spaces include LAB, YCbCr, and Grayscale. I'd advise you go through these on your own, as each has its own benefits, and depending on the situation, you can prefer the right one.
 
-Try this yourself:
-
-matlabimg = imread('urphoto.png');
+**Try this yourself:**
+```matlab
+img = imread('urphoto.png');
 gray = rgb2gray(img);
 hsv = rgb2hsv(img);
 lab = rgb2lab(img);
@@ -306,31 +307,29 @@ subplot(2,2,1), imshow(img), title('RGB')
 subplot(2,2,2), imshow(gray), title('Grayscale')
 subplot(2,2,3), imshow(hsv), title('HSV')
 subplot(2,2,4), imshow(ycbcr), title('YCbCr')
+```
 
 Following all the color corrections, we must also ensure that our camera is working properly. Sometimes when we put a camera in a machine, it tends to distort the image. Around the edges of the camera lens, the incoming light gets deviated, making the image look wider or thinner than it should be.
 
 But MATLAB has you covered for this.
 
-Lens Calibration
+## Lens Calibration
 
-This is where the Camera Calibrator App in MATLAB comes in handy. For this, we need multiple images of a checkerboard from different angles.
+This is where the **Camera Calibrator App** in MATLAB comes in handy. For this, we need multiple images of a checkerboard from different angles.
 
-Why Use a Checkerboard?
-
+### Why Use a Checkerboard?
 The most common calibration method uses a checkerboard pattern because it has precisely known edges and corners that algorithms can detect automatically.
 
-The Calibration Process
+### The Calibration Process
+1. Capture multiple checkerboard images.
+2. Import the images into the Camera Calibrator app.
+3. Detect checkerboard corners automatically.
+4. Estimate camera parameters.
+5. Review the reprojection error.
+6. Export the calibrated camera parameters to MATLAB.
 
-
-Capture multiple checkerboard images.
-Import the images into the Camera Calibrator app.
-Detect checkerboard corners automatically.
-Estimate camera parameters.
-Review the reprojection error.
-Export the calibrated camera parameters to MATLAB.
-
-
-matlab% Detect Checkerboard Corners
+```matlab
+% Detect Checkerboard Corners
 [imagePoints, boardSize] = detectCheckerboardPoints(imageFiles);
 
 % Estimate Camera Parameters
@@ -344,34 +343,40 @@ corrected = undistortImage(img, cameraParams);
 figure
 imshowpair(img, corrected, 'montage')
 title('Original vs Undistorted')
+```
 
-This image is what we get when we directly use the lens calibration app. You can use the code and you'll get the same result. Since we have an app, we can simplify things — in this case, you have to pull the red bar down for image 5, as it's an outlier, and upload some more images. This is how you calibrate a camera.
+*This image is what we get when we directly use the lens calibration app. You can use the code and you'll get the same result. Since we have an app, we can simplify things — in this case, you have to pull the red bar down for image 5, as it's an outlier, and upload some more images. This is how you calibrate a camera.*
 
 Closely following this, the next step is to understand how images can be processed. So let's go through the image processing pipeline.
 
-Image Processing Pipeline
+## Image Processing Pipeline
 
 Image processing can be described as the set of processes aimed at enhancing an image before analyzing it. It would be good if you could learn about the various features of the image, such as sharpness, contrast, and dark spots, as all these features can be modified using MATLAB.
 
-Captured Image → Image Preprocessing → Feature Extraction → Object Detection → Decision Making
+**Captured Image → Image Preprocessing → Feature Extraction → Object Detection → Decision Making**
 
 Following are some image processing functions:
 
-MATLAB provides the imadjust() function to modify image brightness and contrast. Make sure you first convert your image to grayscale using MATLAB's rgb2gray() function.
+MATLAB provides the `imadjust()` function to modify image brightness and contrast. Make sure you first convert your image to grayscale using MATLAB's `rgb2gray()` function.
 
-matlabimg = imread('cameraman.tif');
+```matlab
+img = imread('cameraman.tif');
 adjusted = imadjust(img);
 imshowpair(img, adjusted, 'montage')
+```
 
-A histogram is one of the most useful tools in image processing. Instead of showing where pixels are located, a histogram shows how many pixels have each intensity value.
+A **histogram** is one of the most useful tools in image processing. Instead of showing where pixels are located, a histogram shows how many pixels have each intensity value.
 
-matlabgray = rgb2gray(imread('peppers.png'));
+```matlab
+gray = rgb2gray(imread('peppers.png'));
 figure
 imhist(gray)
+```
 
-Sometimes an image occupies only a small portion of the available intensity range (making it look washed out). Histogram equalization redistributes pixel values to span a wider range, increasing contrast.
+Sometimes an image occupies only a small portion of the available intensity range (making it look washed out). **Histogram equalization** redistributes pixel values to span a wider range, increasing contrast.
 
-matlab% Global Equalization
+```matlab
+% Global Equalization
 equalized = histeq(gray);
 imshowpair(gray, equalized, 'montage')
 
@@ -379,141 +384,139 @@ imshowpair(gray, equalized, 'montage')
 % Processes small regions independently, great for uneven lighting.
 enhanced = adapthisteq(gray);
 imshowpair(gray, enhanced, 'montage')
+```
 
 As you can see in the above image, the difference is quite clear, and hence image processing is very important.
 
-Filtering & Sharpening
+### Filtering & Sharpening
 
-Gaussian Filter (Smoothing): Blurs the image to remove noise. The second argument specifies the standard deviation (larger values = stronger smoothing). You should try finding a not-so-processed image and using this.
+**Gaussian Filter (Smoothing)**: Blurs the image to remove noise. The second argument specifies the standard deviation (larger values = stronger smoothing). You should try finding a not-so-processed image and using this.
+```matlab
+filtered = imgaussfilt(gray, 2);
+```
 
-matlabfiltered = imgaussfilt(gray, 2);
+**Median Filter**: Replaces each pixel with the median value of its neighborhood — great for removing "salt and pepper" noise.
+```matlab
+filtered = medfilt2(gray);
+```
 
-Median Filter: Replaces each pixel with the median value of its neighborhood — great for removing "salt and pepper" noise.
-
-matlabfiltered = medfilt2(gray);
-
-Sharpening: Enhances edges and fine details if an image appears slightly blurred.
-
-matlabsharp = imsharpen(gray);
+**Sharpening**: Enhances edges and fine details if an image appears slightly blurred.
+```matlab
+sharp = imsharpen(gray);
+```
 
 Another very crucial next step is to look at how we segment images — how we distinguish between different things and label them in images.
 
-Image Segmentation
+## Image Segmentation
 
 Humans can immediately look at an image and distinguish objects (e.g., coins, a table, shadows) without conscious effort. A computer only sees a matrix of values:
 
+```
 125 126 128 130 ...
 132 140 145 150 ...
+```
 
-To determine which pixels belong to an object and which belong to the background, we use Image Segmentation. It divides an image into meaningful regions based on Intensity, Color, Texture, Shape, or Distance.
+To determine which pixels belong to an object and which belong to the background, we use **Image Segmentation**. It divides an image into meaningful regions based on Intensity, Color, Texture, Shape, or Distance.
 
-1. Thresholding
-
-The simplest technique. Choose a threshold value T. Every pixel is evaluated as above or below that value, giving you a binary (0 or 1) image.
-
-matlabgray = rgb2gray(imread('scenery.png'));
+### 1. Thresholding
+The simplest technique. Choose a threshold value `T`. Every pixel is evaluated as above or below that value, giving you a binary (0 or 1) image.
+```matlab
+gray = rgb2gray(imread('scenery.png'));
 bw = imbinarize(gray);
 imshow(bw)
+```
 
-2. Otsu's Method
-
+### 2. Otsu's Method
 Sometimes we can't manually decide on a threshold. Otsu's method calculates it automatically based on intensity distributions.
-
-matlabgray = rgb2gray(imread('scenery.png'));
+```matlab
+gray = rgb2gray(imread('scenery.png'));
 T = graythresh(gray);
 bw = imbinarize(gray, T);
+```
 
-3. Adaptive Thresholding
-
+### 3. Adaptive Thresholding
 Global thresholding assumes lighting is uniform. In practice (like scanning a document under a lamp), it rarely is.
-
-matlabbw = imbinarize(gray, 'adaptive');
+```matlab
+bw = imbinarize(gray, 'adaptive');
 imshow(bw)
+```
 
-4. Color-Based Segmentation
-
+### 4. Color-Based Segmentation
 Sometimes brightness isn't enough. We can convert the image to HSV and threshold just the Hue channel.
-
-matlabimg = imread('peppers.png');
+```matlab
+img = imread('peppers.png');
 hsv = rgb2hsv(img);
 H = hsv(:,:,1);
 mask = H > 0.95 | H < 0.05; % Selecting a specific color range
 imshow(mask)
+```
 
-5. Advanced Techniques
-
-
-Region Growing: Starts with seed points and adds neighboring pixels with similar properties to the same region.
-K-Means Clustering: An unsupervised learning algorithm that groups pixels into K clusters based on similarity.
-
-
-matlabimg = imread('peppers.png');
+### 5. Advanced Techniques
+- **Region Growing**: Starts with seed points and adds neighboring pixels with similar properties to the same region.
+- **K-Means Clustering**: An unsupervised learning algorithm that groups pixels into K clusters based on similarity.
+```matlab
+img = imread('peppers.png');
 L = imsegkmeans(img, 3);
 imshow(label2rgb(L))
+```
 
+> **Tip:** MATLAB includes an interactive **Image Segmenter App** that supports Thresholding, Graph Cut, K-Means, Active Contours, and Watershed segmentation. It even auto-generates the MATLAB code for you!
 
-Tip: MATLAB includes an interactive Image Segmenter App that supports Thresholding, Graph Cut, K-Means, Active Contours, and Watershed segmentation. It even auto-generates the MATLAB code for you!
-
-
-
-Feature Extraction
+## Feature Extraction
 
 Now we are able to barely detect things using the above methods, but if we want to check whether an image contains a particular object, such as a car or a boat, how will we be able to do that? Here comes the feature extraction portion of MATLAB.
 
-Algorithms don't memorize every pixel; they search for interesting, distinctive regions called features. Good features are always:
+Algorithms don't memorize every pixel; they search for interesting, distinctive regions called **features**. Good features are always:
 
-
-Distinctive: They stand out.
-Repeatable: They can be detected under different lighting or angles.
-Robust: They remain recognizable despite scaling, rotation, or noise.
-
+- **Distinctive**: They stand out.
+- **Repeatable**: They can be detected under different lighting or angles.
+- **Robust**: They remain recognizable despite scaling, rotation, or noise.
 
 Following are some of the ways of feature extraction.
 
-Edge Detection
-
+### Edge Detection
 An edge is a location where image intensity changes abruptly.
-
-matlabimg = rgb2gray(imread('scenery.jpg'));
+```matlab
+img = rgb2gray(imread('scenery.jpg'));
 edges = edge(img, 'Canny');
 imshow(edges)
+```
 
-Corner Detection
-
+### Corner Detection
 While edges define boundaries, corners uniquely identify locations (where intensity changes significantly in multiple directions).
-
-matlabimg = rgb2gray(imread('checkerboard.png'));
+```matlab
+img = rgb2gray(imread('checkerboard.png'));
 corners = detectHarrisFeatures(img);
 
 imshow(img)
 hold on
 plot(corners)
+```
 
-FAST Features
-
+### FAST Features
 FAST (Features from Accelerated Segment Test) is a modern, high-speed corner detector, perfect for real-time applications like drones and robotics.
+```matlab
+points = detectFASTFeatures(img);
+```
 
-matlabpoints = detectFASTFeatures(img);
-
-Blob Detection & SURF Features
-
+### Blob Detection & SURF Features
 Not all important structures are corners; some are circular regions (blobs).
 
 SURF (Speeded-Up Robust Features) detects interesting points and computes a descriptor for each point. SURF is scale-invariant, rotation-invariant, and robust to lighting changes.
-
-matlabpoints = detectSURFFeatures(img);
+```matlab
+points = detectSURFFeatures(img);
 
 imshow(img)
 hold on
 plot(points)
+```
 
 Now that we know how to see and find features in an image, the next step is to extract these features and use matching descriptors for them.
 
-Extracting & Matching Descriptors
-
+### Extracting & Matching Descriptors
 Once we find features, we can extract their numerical descriptors to match them between different images (e.g., matching two photos of the same building taken from different angles).
-
-matlab% Extract
+```matlab
+% Extract
 points = detectSURFFeatures(img);
 [features, validPoints] = extractFeatures(img, points);
 
@@ -522,62 +525,65 @@ points = detectSURFFeatures(img);
 
 % Visualize Matches
 showMatchedFeatures(img1, img2, matchedPoints1, matchedPoints2)
+```
 
 However, if we take stock images, we might not find an accurate match. To really try this, I suggest you click photos from your phone of an object from different perspectives and see the magic unfold yourself.
 
 The result will display lines connecting the corresponding features across both images!
 
-Object Detection: Teaching Computers to Recognize Objects
+## Object Detection: Teaching Computers to Recognize Objects
 
 Even after all the processing we have covered so far — enhancing images, segmenting objects, and extracting features — the computer still does not know what it is looking at. It may know that an object exists at a particular location, but it cannot yet determine whether that object is a person, a bicycle, a dog, or a traffic cone.
 
-This is where Object Detection comes in.
+This is where **Object Detection** comes in.
 
-Unlike image classification, which predicts only the contents of an entire image, object detection identifies both where the object is and what it is.
+Unlike image classification, which predicts only the contents of an entire image, object detection identifies both **where** the object is and **what** it is.
 
-Image Classification vs. Object Detection
-
+### Image Classification vs. Object Detection
 These two concepts are often confused. Suppose we show a computer an image of a street containing two cars, one bicycle, and three pedestrians.
 
-Image Classification
+**Image Classification**
 The computer evaluates the whole image and might simply respond:
-
-
-"This image contains vehicles and people."
-
-
+> "This image contains vehicles and people."
 
 It provides a single label for the entire image but does not identify or locate individual objects.
 
-Object Detection
+**Object Detection**
 Object detection evaluates the image and returns specific locations and labels:
 
-Object ClassLocationCarBounding Box 1CarBounding Box 2BicycleBounding Box 3PedestrianBounding Box 4PedestrianBounding Box 5PedestrianBounding Box 6
+| Object Class | Location |
+|---|---|
+| Car | Bounding Box 1 |
+| Car | Bounding Box 2 |
+| Bicycle | Bounding Box 3 |
+| Pedestrian | Bounding Box 4 |
+| Pedestrian | Bounding Box 5 |
+| Pedestrian | Bounding Box 6 |
 
 Now the computer knows exactly where each object is and what it represents.
 
-Traditional Object Detection Methods
+## Traditional Object Detection Methods
 
 Before deep learning became the standard, object detection relied on carefully designed algorithms that extracted "handcrafted" features. Although these methods have largely been replaced in complex applications, they remain important because they are computationally efficient and help explain the evolution of computer vision.
 
-The two most influential traditional approaches are Viola–Jones and HOG + SVM.
+The two most influential traditional approaches are **Viola–Jones** and **HOG + SVM**.
 
-1. Viola–Jones Object Detection
-
+### 1. Viola–Jones Object Detection
 The Viola–Jones algorithm was one of the first practical, real-time object detection methods. It became famous for face detection and was widely used in early digital cameras.
 
-Instead of examining every pixel individually, Viola–Jones searches for simple intensity patterns called Haar-like features. These features measure differences between adjacent dark and bright regions.
+Instead of examining every pixel individually, Viola–Jones searches for simple intensity patterns called **Haar-like features**. These features measure differences between adjacent dark and bright regions.
 
 For example, a pattern might look for a dark region above a bright region:
-
+```
 [ ████ Dark ████ ]
 [ ░░░ Bright ░░░ ]
+```
 
 Such patterns capture characteristics like the darker eye region relative to the brighter cheeks on a human face. The algorithm combines thousands of these simple features using a cascade classifier to quickly determine if a face is present.
 
 Let's try this:
-
-matlab% Initialize the detector
+```matlab
+% Initialize the detector
 faceDetector = vision.CascadeObjectDetector();
 
 % Read the image
@@ -591,35 +597,32 @@ detected = insertObjectAnnotation(img, 'rectangle', bbox, 'Face');
 
 % Display the result
 imshow(detected)
+```
 
-2. Histogram of Oriented Gradients (HOG) + SVM
-
+### 2. Histogram of Oriented Gradients (HOG) + SVM
 Rather than using simple intensity differences like Viola-Jones, HOG describes the shape of an object by analyzing the direction (orientation) of its edges.
 
 Imagine looking at a pedestrian. Instead of remembering every pixel, HOG records information such as:
-
-
-Vertical edges
-Horizontal edges
-Diagonal edges
-
+- Vertical edges
+- Horizontal edges
+- Diagonal edges
 
 These edge orientations collectively form a numerical descriptor that characterizes the object's physical appearance. HOG is particularly effective for detecting objects with well-defined shapes, like humans.
 
-Support Vector Machine (SVM):
+**Support Vector Machine (SVM):**
 HOG alone cannot recognize an object; it only extracts the features. The extracted HOG features must be passed to a machine learning classifier known as a Support Vector Machine (SVM). The SVM learns to separate different object categories (e.g., "Person" vs. "Not a Person") using examples collected during training.
 
-matlab% Extract and visualize HOG features
+```matlab
+% Extract and visualize HOG features
 [hog, visualization] = extractHOGFeatures(img);
 
 figure
 imshow(img)
 hold on
 plot(visualization)
+```
 
-Finally, if you don't know coding, you can use the MATLAB Image Labeler tool. It's relatively easy to use — it's an app you can use to draw labels around images. Check out the MATLAB help section for this app.
-
-
+Finally, if you don't know coding, you can use the MATLAB **Image Labeler** tool. It's relatively easy to use — it's an app you can use to draw labels around images. Check out the MATLAB help section for this app.
 
 # NAVIGATION
 

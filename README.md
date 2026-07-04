@@ -22,9 +22,9 @@ Here's what you're actually looking at:
 * Command Window (centre, right) — this is where MATLAB lives and breathes. You can type commands directly here and run them instantly, without writing a full script. Great for quick calculations, testing a single line of code, or just checking what a variable looks like. Think of it as your scratch pad.
 * Workspace (bottom left) — every variable you create, whether by running a script or typing directly into the Command Window, shows up here. Name, type, size, value — all listed out, so you can see exactly what's in memory at any given moment. When something isn't behaving the way you expect, the Workspace is usually the first place to look.
 
-Here are some resources that explain the basics of Matlab in a slightly more comprehensive manner:
-* [Matlab Crash Course - By Younes Lab](https://youtu.be/sLxdNdC6Mds?si=20N6yzAYCiUGTa-O)
-* [Complete Matlab Beginner Basics Course - By Phil Parisi](https://youtu.be/EtUCgn3T9eE?si=n-wQJrUJUJ3GnoKr)
+📖Here are some resources that explain the basics of Matlab in a slightly more comprehensive manner:
+[▶️Matlab Crash Course - By Younes Lab](https://youtu.be/sLxdNdC6Mds?si=20N6yzAYCiUGTa-O) <br />
+[▶️Complete Matlab Beginner Basics Course - By Phil Parisi](https://youtu.be/EtUCgn3T9eE?si=n-wQJrUJUJ3GnoKr)
 
 But as you can probably tell, MATLAB by itself is mostly about writing and running code line by line. So what do we do when we want to simulate an entire system, one which evolves over time, reacts to inputs and responds like the real thing would? Simulating such a system through code would be an incredibly tedious task. Thankfully, MATLAB provides us with a solution in the form of **Simulink**.
 
@@ -78,7 +78,7 @@ Base MATLAB, on its own, gives you a solid general-purpose numerical computing e
 Toolboxes hand you pre-built functions, blocks, and components, all ready to drop into your project the moment you need them, no reinventing required.
 
 ---
-So, with that out of the way, let's actually put this to use. We're going to walk through how to simulate a robot in MATLAB, piece by piece.
+So, with that out of the way, let's actually put this to use. We're going to walk through how to simulate various gadgets and robots in MATLAB, piece by piece.
 Now, since every robot eventually needs to be powered, sensed, and controlled before it's allowed to move an inch, that's exactly where we'll start: the electronics part.
 
 

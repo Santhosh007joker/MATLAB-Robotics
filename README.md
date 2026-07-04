@@ -58,10 +58,10 @@ WELL, not quite and here's why. Simulink blocks talk to each other using mathema
 
 This is where converter blocks come in, they're the translators sitting at the border between these two worlds, and you'll need one any time a signal needs to cross from one side to the other:
 * PS Converter (Simulink-to-Simscape) — takes a regular Simulink signal and converts it into a physical signal that Simscape components can actually use as an input.
-<img src=imgs/ps.png width="50%">
+<img src=imgs/ps.png width="25%">
 * SP Converter (Simscape-to-Simulink) — does the reverse, taking a physical signal from a Simscape component and converting it back into a plain Simulink signal you can feed into a scope, a controller, or any other ordinary block.
 <br />
-<img src=imgs/sp.png width="50%">
+<img src=imgs/sp.png width="25%">
 <br />
 Once you've got these two converters in your toolkit, mixing the two worlds stops being a problem. You can build the physical part of your system in Simscape, where it genuinely belongs, and still hook it straight into all the controllers, scopes, and logic you're used to building in plain Simulink.
 

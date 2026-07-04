@@ -9,6 +9,15 @@ So what exactly is MATLAB?
 
 At its core, it's a numerical computing environment and programming language built around matrices (the name literally stands for **Matrix Laboratory**). That might sound abstract, but here's the thing a: huge chunk of engineering secretly is matrices. Solving a circuit with multiple nodes, tracking how a signal evolves over time or performing calculations that would take hours by hand are only a small fraction of the tasks that MATLAB can perform.
 
+# A Quick Look Around: The MATLAB Interface
+Before we go any further, let's get oriented because opening MATLAB for the first time and staring at three panels you don't recognise is its own special kind of confusion.
+<img src=Interface.png width="50%">
+Here's what you're actually looking at:
+Current Folder (left panel) — this is your file browser. Whatever folder is open here is where MATLAB will look for your scripts and save your files. Keep this organised and you'll save yourself a lot of "where did that file go" moments later.
+Command Window (centre, bottom) — this is where MATLAB lives and breathes. You can type commands directly here and run them instantly, without writing a full script. Great for quick calculations, testing a single line of code, or just checking what a variable looks like. Think of it as your scratch pad.
+Workspace (right panel) — every variable you create, whether by running a script or typing directly into the Command Window, shows up here. Name, type, size, value — all listed out, so you can see exactly what's in memory at any given moment. When something isn't behaving the way you expect, the Workspace is usually the first place to look.
+Editor (centre, top — opens when you create or open a script) — this is where you write actual MATLAB scripts and functions. Unlike the Command Window, code here doesn't run until you explicitly tell it to, which makes it the right place for anything longer than a couple of lines.
+
 But MATLAB by itself is mostly about writing and running code line by line. So what do we do when we want to simulate an entire system, one which evolves over time, reacts to inputs and responds like the real thing would? Simulating such a system through code would be an incredibly tedious task. Thankfully, MATLAB provides us with a solution in the form of **Simulink**.
 
 ## Simulink

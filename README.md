@@ -170,8 +170,111 @@ Model first, measure after, compare both. That loop is how real electronics engi
 
 
 
-With the electronics side covered, it's time to move up a level — from the circuits that power the robot, to how the robot interacts with the physical world. That's where (whatever part comes after this) comes into play and that's exactly where we're headed next.
-
+With the electronics side covered, it's time to move up a level, from the circuits that power the robot, to how the robot actually moves through the physical world. Ethan's arm can be wired up perfectly, motor drives sorted, sensors reading clean values, and it still won't reach across the table and grab the briefcase unless something tells it exactly how far to rotate, and something else makes sure it stops rotating exactly where it's supposed to. That's the part we're covering next.
+ 
+# The Mechanical Part: Simscape Multibody, Kinematics and Control
+ 
+## Simscape Multibody
+ 
+Just like Simscape Electrical had a dedicated library for resistors, capacitors and motors, there's a version of Simscape built specifically for mechanical systems: Simscape Multibody. Same underlying idea. Instead of writing out equations of motion by hand for every link and joint in your robot, you place blocks that represent real rigid bodies, connect them, and the solver handles the physics: mass, inertia, gravity, contact, all of it.
+ 
+And since Simscape Multibody lives inside Simulink, the same rule from the electronics section applies here too. Simulink blocks talk to each other using plain signals, numbers flowing along a line, but Simscape Multibody components talk through actual physical connections, like a shaft transmitting torque or a joint transmitting force. So the moment you want a regular Simulink controller (say, a PID block) to drive a Simscape Multibody joint, you're back to needing a PS Converter to turn that controller's output into something the mechanical side understands, and an SP Converter if you want to feed a joint's position back into a Simulink scope. Same translators, just doing their job on the mechanical side of the house now.
+ 
+You also don't have to build every link from scratch inside Simulink. If you've already got a CAD assembly of your robot arm, `smimport` will pull the whole thing in directly, joints, frames, mass properties and all, ready to simulate.
+ 
+```matlab
+% Import an existing CAD assembly (exported as XML from SolidWorks, Inventor, etc.)
+smimport('robotArmAssembly.xml');
+```
+ 
+Once it's running, the Mechanics Explorer gives you an actual 3D render of the mechanism moving, which is a lot more satisfying to watch than a Scope block twitching.
+ 
+## Frames and Joints
+ 
+Two ideas carry this entire toolbox, and once they click, the rest is just repetition.
+ 
+A **frame** is a coordinate system attached to a specific point on a body. Every rigid body carries one, and frames are how two bodies actually get connected. Saying "attach this arm to that base" really just means lining up a frame on the arm with a frame on the base.
+ 
+A **joint** sits between two frames and decides what motion is allowed between them. A revolute joint lets one frame rotate relative to the other, like an elbow. A prismatic joint lets one frame slide, like a linear actuator. Lock every joint and you've built a statue instead of a robot. Every degree of freedom your arm has exists purely because a joint is sitting there permitting it.
+ 
+```matlab
+% A minimal two-link arm
+link1 = rigidBody('link1');
+link2 = rigidBody('link2');
+ 
+jnt1 = rigidBodyJoint('joint1', 'revolute');
+jnt2 = rigidBodyJoint('joint2', 'revolute');
+ 
+link1.Joint = jnt1;
+link2.Joint = jnt2;
+```
+ 
+## Forward and Inverse Kinematics
+ 
+Once you've got a chain of joints and frames, two questions come up constantly, and they're opposites of each other.
+ 
+**Forward Kinematics (FK)**: if every joint angle is known, where does the end of the arm end up in space? This one's the easy direction. Walk down the chain, apply each joint's rotation and each link's length one after another, and you land on the final position and orientation.
+ 
+```matlab
+robot = importrobot('robotArm.urdf');
+config = homeConfiguration(robot);
+config(1).JointPosition = deg2rad(30);
+config(2).JointPosition = deg2rad(45);
+ 
+tform = getTransform(robot, config, 'endEffector');
+disp(tform)   % 4x4 transform: position + orientation of the end effector
+```
+ 
+**Inverse Kinematics (IK)** runs the same question in reverse, and it's the one that actually matters when you're planning a move: the end effector needs to land on a specific point, so what joint angles get it there? Unlike FK, this usually doesn't have a single clean answer. Multiple joint configurations can reach the same point, and sometimes none can if the point's out of reach entirely. So instead of a direct formula, MATLAB solves it as an optimization problem.
+ 
+```matlab
+ik = inverseKinematics('RigidBodyTree', robot);
+weights = [1 1 1 1 1 1];
+initialGuess = homeConfiguration(robot);
+ 
+targetPose = trvec2tform([0.4 0.2 0.3]);
+ 
+[configSol, solInfo] = ik('endEffector', targetPose, weights, initialGuess);
+```
+ 
+FK tells you where you are. IK tells you how to get where you need to be. Every move the arm ever makes, reaching for a keycard, aligning a scanner, is really IK being solved over and over, several times a second.
+ 
+## Control Theory: PID
+ 
+Knowing the target joint angles is only half the job. Actually getting a motor to sit there, and stay there even when something nudges it off, is a separate problem, and this is where the Control System Toolbox comes in.
+ 
+The standard tool is the **PID controller**, three terms doing three different jobs:
+ 
+- **Proportional (P)**: reacts to how far off you are right now. Bigger error, bigger push.
+- **Integral (I)**: reacts to how long you've been off. Even a small error that refuses to go away gets added up over time until the controller finally pushes hard enough to kill it. This is what removes the steady error P alone can never quite fix.
+- **Derivative (D)**: reacts to how fast the error is changing, and dampens the response so the arm doesn't overshoot and wobble around the target instead of settling on it.
+```matlab
+Kp = 2.5; Ki = 1.2; Kd = 0.3;
+C = pid(Kp, Ki, Kd);
+ 
+plantModel = tf(1, [1 3 2]);   % motor + load, as an example
+closedLoop = feedback(C * plantModel, 1);
+ 
+step(closedLoop)
+```
+ 
+One thing worth knowing before it bites you: **integral windup**. If the error stays large too long, say the arm's physically jammed against something, the integral term keeps piling up way past what's actually needed. The moment the obstruction clears, that pent up integral term slams the motor past the target before it settles. **Anti-windup** just caps how much the integral term is allowed to accumulate, so the controller doesn't overreact once things free up. Not something you want discovering itself mid mission.
+ 
+## PID Tuner: Letting MATLAB Do the Guesswork
+ 
+Manually guessing Kp, Ki and Kd, then re-running the simulation each time, gets old fast. MATLAB has an app for exactly this: the **PID Tuner**.
+ 
+```matlab
+pidTuner(plantModel, C)
+```
+ 
+This opens an interactive window with the step response plotted live, plus sliders for response speed and how aggressively the transient gets handled. Drag a slider, and MATLAB recalculates all three gains in real time, updating the response curve instantly. Land on a response you're happy with, and the app hands back the tuned gains, ready to drop straight into your PID block, whether it's sitting in a plain Simulink loop or driving a joint inside Simscape Multibody.
+ 
+It won't replace actually understanding what each term does (you still need that to judge whether the tuner's suggestion even makes sense), but it turns an afternoon of trial and error into a couple of minutes of dragging sliders.
+ 
+---
+ 
+The arm can now figure out where it needs to go, and get there without overshooting or jamming up. But knowing where to point a camera and actually recognizing what's in front of it are two very different problems, and Ethan still needs to lift a face off someone before this mission's anywhere close to done.
 
 
 # Image Processing in MATLAB

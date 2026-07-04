@@ -68,7 +68,7 @@ Toolboxes hand you pre-built functions, blocks, and components, all ready to dro
 So, with that out of the way, let's actually put this to use. We're going to walk through how to simulate a robot in MATLAB, piece by piece.
 Now, since every robot eventually needs to be powered, sensed, and controlled before it's allowed to move an inch, that's exactly where we'll start: the electronics part.
 
-Here's the section with Control System Toolbox removed and the flow tightened up so it still reads as one cohesive section:
+
 
 ---
 

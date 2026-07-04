@@ -170,7 +170,7 @@ Model first, measure after, compare both. That loop is how real electronics engi
 
 
 
-With the electronics side covered, it's time to move up a level — from the circuits that power the robot, to the mechanical body the robot actually moves with. That's where Simscape Multibody comes in, and that's exactly where we're headed next.
+With the electronics side covered, it's time to move up a level — from the circuits that power the robot, to how the robot perceives the world. That's where Image Processing comes into play and that's exactly where we're headed next.
 
 
 

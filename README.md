@@ -178,24 +178,44 @@ With the electronics side covered, it's time to move up a level, from the circui
  
 Just like Simscape Electrical had a dedicated library for resistors, capacitors and motors, there's a version of Simscape built specifically for mechanical systems: Simscape Multibody. Same underlying idea. Instead of writing out equations of motion by hand for every link and joint in your robot, you place blocks that represent real rigid bodies, connect them, and the solver handles the physics: mass, inertia, gravity, contact, all of it.
  
-And since Simscape Multibody lives inside Simulink, the same rule from the electronics section applies here too. Simulink blocks talk to each other using plain signals, numbers flowing along a line, but Simscape Multibody components talk through actual physical connections, like a shaft transmitting torque or a joint transmitting force. So the moment you want a regular Simulink controller (say, a PID block) to drive a Simscape Multibody joint, you're back to needing a PS Converter to turn that controller's output into something the mechanical side understands, and an SP Converter if you want to feed a joint's position back into a Simulink scope. Same translators, just doing their job on the mechanical side of the house now.
+And since Simscape Multibody lives inside Simulink, the same rule from the electronics section applies here too. Simulink blocks talk to each other using plain signals, numbers flowing along a line, but Simscape Multibody components talk through actual physical connections, like a shaft transmitting torque or a joint transmitting force. So the moment you want a regular Simulink controller (say, a PID block) to drive a Simscape Multibody joint, you need a PS Converter to turn that controller's output into something the mechanical side understands, and an SP Converter if you want to feed a joint's position back into a Simulink scope. Same translators from before, just doing their job on the mechanical side of the house now.
  
-You also don't have to build every link from scratch inside Simulink. If you've already got a CAD assembly of your robot arm, `smimport` will pull the whole thing in directly, joints, frames, mass properties and all, ready to simulate.
+### `smimport()`
+ 
+You don't have to build every link from scratch inside Simulink. If you've already got a CAD assembly of your robot arm, `smimport` pulls the whole thing in directly, joints, frames, mass properties and all, ready to simulate.
  
 ```matlab
 % Import an existing CAD assembly (exported as XML from SolidWorks, Inventor, etc.)
 smimport('robotArmAssembly.xml');
 ```
  
-Once it's running, the Mechanics Explorer gives you an actual 3D render of the mechanism moving, which is a lot more satisfying to watch than a Scope block twitching.
+### Mechanics Explorer
+ 
+Once your model is running, the Mechanics Explorer renders the mechanism in actual 3D as the simulation plays out, joints rotating, links swinging, instead of just numbers changing on a scope.
+ 
+> Try this yourself: build a simple two-link pendulum in Simscape Multibody (two Rigid Transform blocks and one Revolute Joint) and watch it swing under gravity in the Mechanics Explorer before you touch any code.
  
 ## Frames and Joints
  
 Two ideas carry this entire toolbox, and once they click, the rest is just repetition.
  
-A **frame** is a coordinate system attached to a specific point on a body. Every rigid body carries one, and frames are how two bodies actually get connected. Saying "attach this arm to that base" really just means lining up a frame on the arm with a frame on the base.
+### Frames
  
-A **joint** sits between two frames and decides what motion is allowed between them. A revolute joint lets one frame rotate relative to the other, like an elbow. A prismatic joint lets one frame slide, like a linear actuator. Lock every joint and you've built a statue instead of a robot. Every degree of freedom your arm has exists purely because a joint is sitting there permitting it.
+A **frame** is a coordinate system attached to a specific point on a body. Every rigid body carries at least one, and frames are how two bodies actually get connected to each other. Saying "attach this arm to that base" really just means lining up a frame on the arm with a frame on the base.
+ 
+### Joints
+ 
+A **joint** sits between two frames and decides what motion is allowed between them.
+ 
+| Joint Type | Degree of Freedom Allowed | Example |
+|---|---|---|
+| Revolute | Rotation about one axis | Elbow, motor shaft |
+| Prismatic | Sliding along one axis | Linear actuator, telescoping arm |
+| Cylindrical | Rotation and sliding along the same axis | Screw mechanism |
+| Spherical | Rotation about all three axes | Ball and socket joint |
+| Fixed | No relative motion at all | A rigidly bolted bracket |
+ 
+Lock every joint in a mechanism and you've built a statue instead of a robot. Every degree of freedom your arm has exists purely because a joint is sitting there permitting it.
  
 ```matlab
 % A minimal two-link arm
@@ -209,11 +229,13 @@ link1.Joint = jnt1;
 link2.Joint = jnt2;
 ```
  
-## Forward and Inverse Kinematics
+## Kinematics: Forward and Inverse
  
 Once you've got a chain of joints and frames, two questions come up constantly, and they're opposites of each other.
  
-**Forward Kinematics (FK)**: if every joint angle is known, where does the end of the arm end up in space? This one's the easy direction. Walk down the chain, apply each joint's rotation and each link's length one after another, and you land on the final position and orientation.
+### Forward Kinematics (FK)
+ 
+If every joint angle is known, where does the end of the arm end up in space? This is the easy direction. Walk down the chain, apply each joint's rotation and each link's length one after another, and you land on the final position and orientation.
  
 ```matlab
 robot = importrobot('robotArm.urdf');
@@ -225,7 +247,11 @@ tform = getTransform(robot, config, 'endEffector');
 disp(tform)   % 4x4 transform: position + orientation of the end effector
 ```
  
-**Inverse Kinematics (IK)** runs the same question in reverse, and it's the one that actually matters when you're planning a move: the end effector needs to land on a specific point, so what joint angles get it there? Unlike FK, this usually doesn't have a single clean answer. Multiple joint configurations can reach the same point, and sometimes none can if the point's out of reach entirely. So instead of a direct formula, MATLAB solves it as an optimization problem.
+`getTransform()` is doing all the actual work here. Feed it a configuration (a set of joint angles) and it returns exactly where the end effector sits in space as a homogeneous transform, position and orientation bundled into one 4x4 matrix.
+ 
+### Inverse Kinematics (IK)
+ 
+This runs the same question in reverse, and it's the one that actually matters when you're planning a move: the end effector needs to land on a specific point, so what joint angles get it there? Unlike FK, this usually doesn't have a single clean answer. Multiple joint configurations can reach the same point, and sometimes none can if the point's out of reach entirely. So instead of a direct formula, MATLAB solves it as an optimization problem.
  
 ```matlab
 ik = inverseKinematics('RigidBodyTree', robot);
@@ -237,6 +263,10 @@ targetPose = trvec2tform([0.4 0.2 0.3]);
 [configSol, solInfo] = ik('endEffector', targetPose, weights, initialGuess);
 ```
  
+The `weights` vector controls how strictly the solver has to match position versus orientation, and `initialGuess` gives it a starting point to search from rather than starting cold every time.
+ 
+> Try this yourself: pick a target point that's clearly outside your arm's reach and run the same `ik` call. Look at `solInfo` afterward, it'll tell you the solver didn't fully converge, which is exactly the kind of feedback you want before that same target gets fed to a real motor.
+ 
 FK tells you where you are. IK tells you how to get where you need to be. Every move the arm ever makes, reaching for a keycard, aligning a scanner, is really IK being solved over and over, several times a second.
  
 ## Control Theory: PID
@@ -245,9 +275,14 @@ Knowing the target joint angles is only half the job. Actually getting a motor t
  
 The standard tool is the **PID controller**, three terms doing three different jobs:
  
-- **Proportional (P)**: reacts to how far off you are right now. Bigger error, bigger push.
-- **Integral (I)**: reacts to how long you've been off. Even a small error that refuses to go away gets added up over time until the controller finally pushes hard enough to kill it. This is what removes the steady error P alone can never quite fix.
-- **Derivative (D)**: reacts to how fast the error is changing, and dampens the response so the arm doesn't overshoot and wobble around the target instead of settling on it.
+| Term | Reacts To | Effect |
+|---|---|---|
+| Proportional (P) | The current error | Immediate push proportional to how far off you are |
+| Integral (I) | Error accumulated over time | Removes the steady error P alone can never fully fix |
+| Derivative (D) | How fast the error is changing | Dampens the response so it doesn't overshoot and wobble |
+ 
+### `pid()`
+ 
 ```matlab
 Kp = 2.5; Ki = 1.2; Kd = 0.3;
 C = pid(Kp, Ki, Kd);
@@ -258,17 +293,23 @@ closedLoop = feedback(C * plantModel, 1);
 step(closedLoop)
 ```
  
-One thing worth knowing before it bites you: **integral windup**. If the error stays large too long, say the arm's physically jammed against something, the integral term keeps piling up way past what's actually needed. The moment the obstruction clears, that pent up integral term slams the motor past the target before it settles. **Anti-windup** just caps how much the integral term is allowed to accumulate, so the controller doesn't overreact once things free up. Not something you want discovering itself mid mission.
+`step()` here plots exactly what you'd see on an oscilloscope if you fed this closed loop a sudden target change: how fast it climbs, whether it overshoots, and how long it takes to settle.
  
-## PID Tuner: Letting MATLAB Do the Guesswork
+### A Common Pitfall: Integral Windup
  
-Manually guessing Kp, Ki and Kd, then re-running the simulation each time, gets old fast. MATLAB has an app for exactly this: the **PID Tuner**.
+If the error stays large for too long, say the arm is physically jammed against something, the integral term keeps accumulating way past what's actually needed. The moment the obstruction clears, that pent up integral term slams the motor past the target before it settles down. **Anti-windup** simply caps how much the integral term is allowed to accumulate, so the controller doesn't overreact once things free up. Not something you want a real arm discovering for itself mid mission.
+ 
+### `pidTuner()`
+ 
+Manually guessing Kp, Ki and Kd, then re-running the simulation each time, gets old fast. MATLAB has an app for exactly this.
  
 ```matlab
 pidTuner(plantModel, C)
 ```
  
 This opens an interactive window with the step response plotted live, plus sliders for response speed and how aggressively the transient gets handled. Drag a slider, and MATLAB recalculates all three gains in real time, updating the response curve instantly. Land on a response you're happy with, and the app hands back the tuned gains, ready to drop straight into your PID block, whether it's sitting in a plain Simulink loop or driving a joint inside Simscape Multibody.
+ 
+> Try this yourself: tune a PID loop with `pidTuner`, note down the gains it settles on, then manually push `Ki` up by 5 to 10 times that value and re-run `step()`. You should see the same slow overshoot and settle pattern that integral windup causes, right there on the plot.
  
 It won't replace actually understanding what each term does (you still need that to judge whether the tuner's suggestion even makes sense), but it turns an afternoon of trial and error into a couple of minutes of dragging sliders.
  

@@ -1017,3 +1017,30 @@ Worth a footnote: MathWorks' Robotics System Toolbox is a different lineage from
 ## Wrapping Up
 
 Five building blocks: `occupancyMap` for the world, `plannerRRT` for getting through it, `imuSensor`/`gpsSensor` for realistic sensor input, `lidarSLAM` for mapping the unknown, and `stateSpaceSE3` for taking the same planning pattern into 3D. Everything else in the toolbox — RRT*, Bi-RRT, GPS/INS fusion filters, vehicle-specific state spaces — builds on these same patterns. Once you're comfortable swapping objects in and out of this pipeline, the rest of the documentation reads less like a reference manual and more like a menu.
+
+
+## Further Resources
+
+A few places worth going deeper if any section here made you want to actually build something, mapped to the part they're most useful for:
+
+- [MATLAB Onramp](https://matlabacademy.mathworks.com/details/matlab-onramp/gettingstarted) — free, interactive, covers exactly what the "Matlab - The Basics" section walks through, good if you want hands-on practice with the interface and syntax before moving further into the blog.
+
+- [Simulink Onramp](https://matlabacademy.mathworks.com/details/simulink-onramp/simulink) — the natural next step after the Simulink section, actually building block diagrams yourself instead of just reading about source/processing/sink blocks.
+
+- [Get Started with Simscape Multibody](https://www.mathworks.com/help/sm/getting-started-with-simmechanics.html) — official walkthrough for the Mechanical Part section, includes a step-by-step pendulum build using Rigid Transform and Revolute Joint blocks, which is the fastest way to actually see frames and joints working together.
+
+- [Build Basic Rigid Body Tree Models](https://www.mathworks.com/help/robotics/ug/build-basic-rigid-body-tree-models.html) — pairs directly with the Frames and Joints section, shows the code-based (`rigidBodyTree`) side of building the same structures instead of dragging blocks.
+
+- [Get Started with Robotics System Toolbox](https://www.mathworks.com/help/robotics/getting-started-with-robotics-system-toolbox.html) — covers coordinate transformations, DH parameters, and FK/IK conceptually, good companion for the Kinematics section if the math behind `getTransform` and `inverseKinematics` feels like a black box right now.
+
+- [inverseKinematics documentation](https://www.mathworks.com/help/robotics/ref/inversekinematics-system-object.html) — specifically useful for understanding what `weights` and `initialGuess` are actually doing under the hood in the IK section, worth reading once the basic example clicks.
+
+- [MATLAB Tech Talks: Controls](https://www.mathworks.com/videos/tech-talks/controls.html) — short, well-explained videos on PID and control theory concepts generally, good for building intuition around the Control Theory: PID section before diving back into the `pid()` and `pidTuner()` code.
+
+- [Image Processing Onramp](https://matlabacademy.mathworks.com/details/image-processing-onramp/imageprocessing) — free interactive course covering the same ground as most of the Image Processing section: reading, thresholding, segmentation, all hands-on instead of just reading code.
+
+- [What Is Camera Calibration?](https://www.mathworks.com/help/vision/ug/camera-calibration.html) — goes deeper into the actual math (intrinsics, extrinsics, distortion coefficients) behind the Lens Calibration section, useful once you've run the Camera Calibrator app and want to know what it actually computed.
+
+- [vision.CascadeObjectDetector documentation](https://www.mathworks.com/help/vision/ref/vision.cascadeobjectdetector-system-object.html) — the official reference for the Viola-Jones detector used in the Traditional Object Detection Methods section, including the original Haar-like feature paper it's based on.
+
+- [Get Started with Navigation Toolbox](https://www.mathworks.com/help/nav/getting-started-with-navigation-toolbox.html) — direct companion to the entire NAVIGATION section, has runnable examples for RRT path planning and lidar SLAM that mirror the `occupancyMap`/`plannerRRT`/`lidarSLAM` code already in the blog.

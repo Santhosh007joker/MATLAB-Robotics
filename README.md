@@ -239,8 +239,14 @@ img(120,150,:)
 The pixel at row 120 and column 150 has Red = 255, Green = 140, and Blue = 60.
 
 > I would highly suggest booting up MATLAB and trying the above commands with a picture of your choice.
+<br />
+<img src=imgs/cars.png width="50%">
 
 *I have taken the above image as a reference. It's a grayscale image, named `cars.png`.*
+<br />
+<img src=imgs/scrn1.png width="50%"> <br />
+<img src=imgs/scrn2.png width="50%"> <br />
+<img src=imgs/scrn3.png width="50%"> <br />
 
 Now, after you have tried all the commands with an image of your choice, let's see the types of images and the formats in which they are stored in MATLAB.
 

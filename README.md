@@ -44,6 +44,9 @@ Now, blocks can generally be divided into three distinct categories and once you
 
 Source feeds into processing, processing feeds into sink  and just like that, you've got a working simulation, built entirely out of arranging these three categories in whatever order your system actually needs.
 
+A full tutorial on how to use Simulink can be found here:
+[Getting Started With Simulink - Mathworks](https://youtube.com/playlist?list=PL484BA2AD3AE4C2D0&si=ISXrRSDpdc_2aQg6)
+
 ## Simscape
 Now, within Simulink, there's a more specialized layer called Simscape. Where regular Simulink blocks represent abstract signals and math operations, Simscape blocks represent actual physical components: resistors, capacitors, motors, gears, pipes, you name it. You're not writing the differential equations that describe how these things behave; Simscape already knows the physics. You just wire the components together the way you'd wire them on a breadboard (or a schematic), and the simulation figures out the rest. 
 
@@ -57,6 +60,9 @@ This is where converter blocks come in, they're the translators sitting at the b
 * PS Converter (Simulink-to-Simscape) — takes a regular Simulink signal and converts it into a physical signal that Simscape components can actually use as an input.
 * SP Converter (Simscape-to-Simulink) — does the reverse, taking a physical signal from a Simscape component and converting it back into a plain Simulink signal you can feed into a scope, a controller, or any other ordinary block.
 Once you've got these two converters in your toolkit, mixing the two worlds stops being a problem. You can build the physical part of your system in Simscape, where it genuinely belongs, and still hook it straight into all the controllers, scopes, and logic you're used to building in plain Simulink.
+
+Here's another tutorial on how to use Simscape : 
+[Physical Modeling in Matlab - Mathworks](https://youtube.com/playlist?list=PLn8PRpmsu08qZutTT-7dRthkAnFuQjCOV&si=JY9XuIw65GtuIJ5F)
 
 ## Toolboxes
 Okay, so at this point you've got a decent picture of how MATLAB, Simulink, and Simscape fit together : one's for writing code, one's for visual block-diagram simulation, and one's for modeling actual physical components. But there's still a piece of the puzzle we haven't really unpacked: what makes MATLAB capable of doing any of this specialized stuff in the first place?
@@ -74,29 +80,28 @@ Now, since every robot eventually needs to be powered, sensed, and controlled be
 
 # The Electronics Part: Simscape Electrical and Friends
 
-Strip away the motors, the joints, the fancy kinematics — and every robot is ultimately just a circuit that happens to be shaped like a robot. Power has to get from a battery to a motor. A sensor has to convert something physical (flex, pressure, light) into a voltage your microcontroller can actually read. None of the mechanical stuff works until the electrical stuff works first. So that's where we're starting.
+Strip away the motors, the joints, the fancy kinematics and every robot is ultimately just a circuit that happens to be shaped like a robot. Power has to get from a battery to a motor. A sensor has to convert something physical (flex, pressure, light) into a voltage your microcontroller can actually read. None of the mechanical stuff works until the electrical stuff works first. So that's where we're starting.
 
 ## Simscape Electrical
 
 This is the big one for electronics simulation in MATLAB. Remember what we said about Simscape knowing the physics so you don't have to? Simscape Electrical is that same idea, applied specifically to electrical and electronic systems.
 
-It gives you a library of actual electrical components — resistors, capacitors, inductors, diodes, MOSFETs, op-amps, transformers, motor drives, batteries — that you wire together exactly the way you'd wire them on a schematic. No writing out differential equations, no manually deriving how a MOSFET switches — the toolbox already has all of that baked in. You place the components, connect them, and simulate.
+It gives you a library of any and all electrical components that you can think of :resistors, capacitors, inductors, diodes, MOSFETs, op-amps, transformers, motor drives, batteries etc. which you can wire together exactly the way you'd wire them on a schematic. No writing out differential equations, no manually deriving how a MOSFET switches, the toolbox already has all of that baked in. You just place the components, connect them, and simulate.
 
 
 
 What makes it genuinely useful for robotics specifically? A few things:
 
-* **Motor and drive simulation** — Simscape Electrical has dedicated blocks for DC motors, BLDC motors, stepper motors, and the drive circuits that control them. You can model the full electrical behaviour of a motor — back-EMF, winding resistance, inductance — and watch how it responds to a PWM signal before you've touched a motor driver IC. For anyone who's ever burned out an L298N because they didn't fully understand what was happening electrically, this is the part that would have saved you.
+* **Motor and drive simulation** — Simscape Electrical has dedicated blocks for DC motors, BLDC motors, stepper motors, and the drive circuits that control them. You can model the full electrical behaviour of a motor: back-EMF, winding resistance, inductance and watch how it responds to a PWM signal before you've touched a motor driver IC. For anyone who's ever burned out an L298N because they didn't fully understand what was happening electrically, this is the part that would have saved you.
 
-* **Power electronics** — H-bridges, buck converters, boost converters, PWM generators — all available as blocks. If your robot runs on a battery and needs regulated voltages at different levels (say, 12V for motors and 5V for logic), you can model the entire power chain and verify it before ordering a single component.
+* **Power electronics** — H-bridges, buck converters, boost converters, PWM generators, all available as blocks. If your robot runs on a battery and needs regulated voltages at different levels (say, 12V for motors and 5V for logic), you can model the entire power chain and verify it before ordering a single component.
 
-* **Sensor front-ends** — flex sensors, current sensors, voltage dividers, op-amp signal conditioning circuits — these are all just passive and active component arrangements, and Simscape Electrical handles all of them. You can model exactly what voltage range you'll get out of a sensor under different conditions, which saves a lot of "why is my ADC reading garbage" debugging later.
+* **Sensor front-ends** — flex sensors, current sensors, voltage dividers, op-amp signal conditioning circuits, these are all just passive and active component arrangements, and Simscape Electrical handles all of them. You can model exactly what voltage range you'll get out of a sensor under different conditions, which saves a lot of "why is my ADC reading garbage" debugging later.
 
 📖 *Go further with Simscape Electrical:*
-- [▶️ Simscape Electrical Overview – MathWorks YouTube](https://www.youtube.com/watch?v=2FMQFkTAWgA)
-- [▶️ Modeling a DC Motor in Simscape Electrical – MathWorks](https://www.youtube.com/watch?v=YqZbDjTQHDk)
+- [▶️ What is Simscape Electrical – MathWorks YouTube](https://youtu.be/W6H71Fb0MTc?si=1PTjoHhZsaKPhzAE)
+- [▶️ Introduction to Electrical System Modeling – MathWorks](https://youtu.be/AMnzljjkbB4?si=ckmZWc8bDDHrw59E)
 - [📄 Simscape Electrical Documentation](https://www.mathworks.com/help/sps/)
-- [📄 Power Electronics Simulation with Simscape – MathWorks Examples](https://www.mathworks.com/help/sps/power-electronics.html)
 
 ---
 
@@ -118,25 +123,25 @@ Let's make this concrete. Say you've got a DC motor being driven by an H-bridge,
 
 The battery feeds into the H-bridge. The H-bridge feeds into the motor terminals. The PWM signal from Simulink crosses into Simscape via the PS Converter and controls the H-bridge switching. The sensors sit on the motor terminals, and their outputs come back out through SP Converters into a Scope.
 
-Hit run, and you can watch the motor spin up, see the current spike at startup (the inrush current your motor driver needs to survive), observe how speed and current settle at steady state, and check how the system responds when you change the PWM duty cycle — all before a single component is in your hand.
+Hit run and you can watch the motor spin up, see the current spike at startup (the inrush current your motor driver needs to survive), observe how speed and current settle at steady state and check how the system responds when you change the PWM duty cycle. Pretty neat, right?
 
 
 
 *🔧 Try it yourself — MathWorks ships example models with Simscape Electrical. In MATLAB, run `openExample('sps/DCMotorExample')` in the Command Window to open a pre-built DC motor simulation and explore it before building your own from scratch.*
 
 📖 *More on motor modelling:*
-- [▶️ DC Motor Control with Simulink – Brian Douglas](https://www.youtube.com/watch?v=UR0hOmjaHp0)
+- [▶️ DC Motor Control with Simulink – Donghwa Ryu](https://youtu.be/ArSDxzfLSxo?si=XKFLJxw-sSKdVt8c)
 - [📄 DC Motor Model – MathWorks Documentation](https://www.mathworks.com/help/sps/ref/dcmotor.html)
 
 ---
 
-### DAQ Toolbox — Bringing Real Hardware Into the Picture
+## DAQ Toolbox — Bringing Real Hardware Into the Picture
 
-Here's where simulation meets reality. You've modelled your motor circuit in Simscape Electrical — at some point, you need to actually run this on hardware and verify that the real world agrees with what your simulation predicted. That's where the **Data Acquisition Toolbox** comes in.
+Here's where simulation meets reality. You've modelled your motor circuit in Simscape Electrical but at some point, you need to actually run this on hardware and verify that the real world agrees with what your simulation predicted. That's where the **Data Acquisition Toolbox** comes in.
 
-DAQ Toolbox lets MATLAB talk directly to physical hardware — DAQ boards, Arduinos, sensors — and pull live measurements straight into your workspace. No manually exporting CSVs from an oscilloscope, no transcribing numbers off a screen. You plug in, run a few lines, and the data is in a MATLAB variable ready to be plotted or compared against your simulation output.
+DAQ Toolbox lets MATLAB talk directly to physical hardware : DAQ boards, Arduinos, sensors and pull live measurements straight into your workspace. No manually exporting CSVs from an oscilloscope, no transcribing numbers off a screen. You plug in, run a few lines, and the data is in a MATLAB variable ready to be plotted or compared against your simulation output.
 
-For a robotics project this matters enormously. You can log your motor's actual current draw during operation, compare it against what Simscape Electrical predicted, and immediately spot if something in your real circuit isn't matching the model — a sign that either a component value is off, or there's something in the physical system you haven't accounted for.
+For a robotics project this matters enormously. You can log your motor's actual current draw during operation, compare it against what Simscape Electrical predicted, and immediately spot if something in your real circuit isn't matching the model, maybe a component value is off, or there's something in the physical system you haven't accounted for.
 
 ```matlab
 % Connect to a DAQ device and capture live motor current
@@ -161,8 +166,7 @@ grid on;
 *🔧 Try it yourself — if you don't have a DAQ board, MATLAB's Arduino support package lets you do a version of this with a regular Arduino Uno over USB. Install it via the Add-On Explorer and try logging a potentiometer voltage first before moving to anything motor-related.*
 
 📖 *Go further with DAQ Toolbox:*
-- [▶️ Getting Started with DAQ Toolbox – MathWorks YouTube](https://www.youtube.com/watch?v=KuTFBMdF7lg)
-- [▶️ Using Arduino with MATLAB – MathWorks](https://www.youtube.com/watch?v=GR5KtX9yFg0)
+- [▶️ What is DAQ Toolbox – MathWorks YouTube](https://youtu.be/oUQ4JtxZL8Q?si=r7XYnMQVJtvllqzi)
 - [📄 DAQ Toolbox Documentation](https://www.mathworks.com/help/daq/)
 - [📄 MATLAB Arduino Support Package](https://www.mathworks.com/hardware-support/arduino-matlab.html)
 
@@ -170,14 +174,14 @@ grid on;
 
 ### How These Two Work Together
 
-Here's the part worth pausing on, because it's easy to miss when you're learning each toolbox separately.
+Here's the part worth pausing on, because it's pretty easy to miss when you're learning each toolbox separately.
 
-Simscape Electrical and DAQ Toolbox aren't two separate tools you pick between — they're two halves of the same workflow:
+Simscape Electrical and DAQ Toolbox aren't two separate tools you pick between, they're basically two halves of the same workflow:
 
-- **Simscape Electrical** lets you model and simulate the circuit before anything exists physically — catch problems on screen before they become problems on a bench
-- **DAQ Toolbox** lets you validate that simulation against real hardware once you've built it — confirm that the real world actually agrees with what your model predicted
+- **Simscape Electrical** lets you model and simulate the circuit before anything exists physically : catch problems on screen before they become problems on a bench
+- **DAQ Toolbox** lets you validate that simulation against real hardware once you've built it : confirm that the real world actually agrees with what your model predicted
 
-Model first, measure after, compare both. That loop is how real electronics engineering actually works — and having both layers inside the same MATLAB environment, sharing the same variables, the same plots, the same workspace — is what makes it genuinely practical rather than just theoretically nice.
+Model first, measure after, compare both. That loop is how real electronics engineering actually works and having both layers inside the same MATLAB environment, sharing the same variables, the same plots, the same workspace is what makes it genuinely practical rather than just theoretically nice.
 
 
 

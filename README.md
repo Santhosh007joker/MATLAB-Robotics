@@ -677,7 +677,7 @@ This section covers planning a path, modeling sensors, doing SLAM, and planning 
 
 ## 1. Build a Map: `occupancyMap`
 
-The most basic building block is the occupancy map — a grid where each cell holds a probability that it's occupied by an obstacle. Values close to 1 represent a high probability that the cell contains an obstacle, while values close to 0 represent a high probability that the cell is free.
+Before Ethan goes anywhere, Luther pulls up the schematics. The occupancy map is that schematic — a grid where each cell holds a probability that it's occupied by an obstacle. Values close to 1 represent a high probability that the cell contains an obstacle, while values close to 0 represent a high probability that the cell is free.
 
 ```matlab
 % Create an empty 10m x 10m map at 20 cells/meter
@@ -703,7 +703,7 @@ show(map)
 
 ## 2. Plan a Path: `plannerRRT`
 
-Once you have a map, the toolbox provides customizable search and sampling-based path planners, as well as metrics for validating and comparing paths. The classic example is RRT (Rapidly-exploring Random Tree). The workflow is always: define a state space → define a state validator tied to your map → create the planner → call `plan`.
+Now Ethan needs a way through the building. Once you have a map, the toolbox provides customizable search and sampling-based path planners, as well as metrics for validating and comparing paths. The classic example is RRT (Rapidly-exploring Random Tree). The workflow is always: define a state space → define a state validator tied to your map → create the planner → call `plan`.
 
 ```matlab
 % Load an example map
@@ -758,7 +758,7 @@ The first `plannerRRT` snippet stops the moment it finds *any* valid path. This 
 
 ## 3. Simulate a Sensor: `imuSensor`
 
-Real robots don't get clean position and orientation for free — they infer it from noisy sensors. The toolbox lets you simulate that: you can model and tune parameters for IMU sensors, including accelerometer, gyroscope, and magnetometer characteristics, and configure noise profiles, biases, and drift to match real hardware.
+Even the best agent doesn't get a clean read on their own position for free. Real robots don't get clean position and orientation for free either — they infer it from noisy sensors. The toolbox lets you simulate that: you can model and tune parameters for IMU sensors, including accelerometer, gyroscope, and magnetometer characteristics, and configure noise profiles, biases, and drift to match real hardware.
 
 ```matlab
 Fs = 100;  % sample rate, Hz
@@ -796,7 +796,7 @@ Fusing the two — IMU for short-term smoothness, GPS for long-term correction �
 
 ## 4. SLAM: `lidarSLAM`
 
-The toolbox provides algorithms and analysis tools for simultaneous localization and mapping (SLAM), letting a robot build a map of an unknown environment while simultaneously tracking its own position in it. `lidarSLAM` takes lidar scans, attaches them to a node in a pose graph, and automatically detects loop closures to correct drift.
+Sometimes the team walks into a building with no schematic at all. The toolbox provides algorithms and analysis tools for simultaneous localization and mapping (SLAM), letting a robot build a map of an unknown environment while simultaneously tracking its own position in it. `lidarSLAM` takes lidar scans, attaches them to a node in a pose graph, and automatically detects loop closures to correct drift.
 
 ```matlab
 maxLidarRange = 8;     % meters
@@ -834,7 +834,7 @@ show(occMap)
 
 ## 5. Going 3D: `stateSpaceSE3`
 
-Everything above used `stateSpaceSE2` — fine for ground robots, but drones and manipulators move through 3D space. Swap in `stateSpaceSE3` and `validatorOccupancyMap3D` and the same RRT workflow plans through a volume instead of a plane. The state vector grows to `[x y z qw qx qy qz]` — position plus a quaternion for orientation:
+Everything above kept Ethan on one floor, using `stateSpaceSE2` — fine for ground robots, but drones and manipulators move through 3D space. Swap in `stateSpaceSE3` and `validatorOccupancyMap3D` and the same RRT workflow plans through a volume instead of a plane. The state vector grows to `[x y z qw qx qy qz]` — position plus a quaternion for orientation.
 
 ```matlab
 % omap is a pre-built occupancyMap3D of a city block
@@ -855,7 +855,7 @@ goal  = [150 33 35 0.3 0 0.1 0.6];
 [pathObj,solnInfo] = plan(planner,start,goal);
 ```
 
-Same planner object, same `plan` call — just a different state space and validator underneath. That consistency is the toolbox's biggest practical strength: learn the RRT pattern once on a 2D map, and it transfers almost unchanged to 3D, to Dubins/Reeds-Shepp vehicle models, or to a custom state space you define yourself.
+Same planner object, same `plan` call — just a different state space and validator underneath. That consistency is the toolbox's biggest practical strength: learn the RRT pattern once on a 2D map, and it transfers almost unchanged to 3D, or to a custom state space you define yourself.
 
 ## A Common Pitfall
 
@@ -873,6 +873,3 @@ Worth a footnote: MathWorks' Robotics System Toolbox is a different lineage from
 ## Wrapping Up
 
 Five building blocks: `occupancyMap` for the world, `plannerRRT` for getting through it, `imuSensor`/`gpsSensor` for realistic sensor input, `lidarSLAM` for mapping the unknown, and `stateSpaceSE3` for taking the same planning pattern into 3D. Everything else in the toolbox — RRT*, Bi-RRT, GPS/INS fusion filters, vehicle-specific state spaces — builds on these same patterns. Once you're comfortable swapping objects in and out of this pipeline, the rest of the documentation reads less like a reference manual and more like a menu.
-
----
-*All code verified against MathWorks Navigation Toolbox documentation (occupancyMap, setOccupancy, inflate, plannerRRT, plannerRRTStar, imuSensor, gpsSensor, lidarScan, lidarSLAM, stateSpaceSE3, validatorOccupancyMap3D reference pages) and product overview pages.*

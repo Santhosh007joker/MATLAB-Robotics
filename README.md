@@ -91,7 +91,7 @@ Strip away the motors, the joints, the fancy kinematics and every robot is ultim
 
 This is the big one for electronics simulation in MATLAB. Remember what we said about Simscape knowing the physics so you don't have to? Simscape Electrical is that same idea, applied specifically to electrical and electronic systems.
 
-It gives you a library of any and all electrical components that you can think of :resistors, capacitors, inductors, diodes, MOSFETs, op-amps, transformers, motor drives, batteries etc. which you can wire together exactly the way you'd wire them on a schematic. No writing out differential equations, no manually deriving how a MOSFET switches, the toolbox already has all of that baked in. You just place the components, connect them, and simulate.
+It gives you a library of any and all electrical components that you can think of :resistors, capacitors, inductors, diodes, MOSFETs, op-amps, transformers, motor drives, batteries etc. which you can wire together exactly the way you'd wire them on a schematic. No writing out differential equations, no manually deriving how a MOSFET switches, the toolbox already has all of that baked in. You just place the components, connect them, and simulate. <br />
 <img src=imgs/simscape_electrical.png width="50%">
 
 
@@ -112,29 +112,7 @@ What makes it genuinely useful for robotics specifically? A few things:
 
 #### Let's See It in Practice: A DC Motor Circuit
 
-Let's make this concrete. Say you've got a DC motor being driven by an H-bridge, powered by a 12V battery. Here's roughly how you'd set this up in Simscape Electrical:
-
-**The components you'd drag in:**
-- A **DC Voltage Source** block set to 12V — your battery
-- An **H-Bridge** block from the Simscape Electrical library — your motor driver
-- A **DC Motor** block — with parameters like armature resistance, inductance, and back-EMF constant set to match your actual motor's datasheet
-- A **PWM Generator** block in Simulink — generating the duty cycle signal that controls motor speed
-- A **PS Converter** — to bring that Simulink PWM signal into the Simscape world
-- A **Current Sensor** and **Voltage Sensor** — to measure what's actually happening at the motor terminals
-- **SP Converters** on the sensor outputs — to bring measurements back into Simulink for plotting
-- A **Scope** block — to watch voltage, current, and motor speed over time
-
-**What you'd wire together:**
-
-The battery feeds into the H-bridge. The H-bridge feeds into the motor terminals. The PWM signal from Simulink crosses into Simscape via the PS Converter and controls the H-bridge switching. The sensors sit on the motor terminals, and their outputs come back out through SP Converters into a Scope.
-
-Hit run and you can watch the motor spin up, see the current spike at startup (the inrush current your motor driver needs to survive), observe how speed and current settle at steady state and check how the system responds when you change the PWM duty cycle. Pretty neat, right?
-
-
-
-*🔧 Try it yourself — MathWorks ships example models with Simscape Electrical. In MATLAB, run `openExample('sps/DCMotorExample')` in the Command Window to open a pre-built DC motor simulation and explore it before building your own from scratch.*
-
-📖 *More on motor modelling:*
+📖 *Some resources on motor modelling:*
 - [▶️ DC Motor Control with Simulink – Donghwa Ryu](https://youtu.be/ArSDxzfLSxo?si=XKFLJxw-sSKdVt8c)
 - [📄 DC Motor Model – MathWorks Documentation](https://www.mathworks.com/help/sps/ref/dcmotor.html)
 

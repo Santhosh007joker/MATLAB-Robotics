@@ -1,4 +1,4 @@
-# MATLAB-Robotics
+# Mission MATLAB - Simulation Protocol
 Imagine Tom Cruise gets handed a new mission. The Syndicate is on the loose, and the clock is already ticking. The mission is clear: track them down, disrupt their operation, and do it with gadgets that would make Q jealous. There's just one problem. The kind of hardware this mission demands doesn't come cheap. We're talking motor drives, sensor arrays, power systems, and precision control circuits that cost more to prototype than most people make in a year. You don't just wire those up on a breadboard and hope for the best. You have to simulate first: rigorously, completely, and with the same physics the real thing would obey. <br />
 <br />
 **Now the question is : how exactly can we do that?**

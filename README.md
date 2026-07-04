@@ -61,6 +61,7 @@ This is where converter blocks come in, they're the translators sitting at the b
 * PS Converter (Simulink-to-Simscape) — takes a regular Simulink signal and converts it into a physical signal that Simscape components can actually use as an input.
 <img src=imgs/ps.png width="50%">
 * SP Converter (Simscape-to-Simulink) — does the reverse, taking a physical signal from a Simscape component and converting it back into a plain Simulink signal you can feed into a scope, a controller, or any other ordinary block.
+<br />
 <img src=imgs/sp.png width="50%">
 <br />
 Once you've got these two converters in your toolkit, mixing the two worlds stops being a problem. You can build the physical part of your system in Simscape, where it genuinely belongs, and still hook it straight into all the controllers, scopes, and logic you're used to building in plain Simulink.
@@ -91,7 +92,7 @@ Strip away the motors, the joints, the fancy kinematics and every robot is ultim
 This is the big one for electronics simulation in MATLAB. Remember what we said about Simscape knowing the physics so you don't have to? Simscape Electrical is that same idea, applied specifically to electrical and electronic systems.
 
 It gives you a library of any and all electrical components that you can think of :resistors, capacitors, inductors, diodes, MOSFETs, op-amps, transformers, motor drives, batteries etc. which you can wire together exactly the way you'd wire them on a schematic. No writing out differential equations, no manually deriving how a MOSFET switches, the toolbox already has all of that baked in. You just place the components, connect them, and simulate.
-<img src=imgs/simscape electrical.png width="50%">
+<img src=imgs/simscape_electrical.png width="50%">
 
 
 What makes it genuinely useful for robotics specifically? A few things:

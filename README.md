@@ -4,7 +4,8 @@
 Have you ever built a circuit, watched it do something weird, and thought "I bet there's a cleaner way to know why this is happening, instead of just poking at it with a multimeter and hoping"? That right there is basically the entire pitch for this post.
 
 <img src = Matlab.png width = "50%">
-If you've spent any time around circuit labs, embedded systems courses, or hardware prototyping benches, you've probably heard one name come up again and again: Matlab. It's got a reputation as the "engineer's calculator on steroids," and in various fields of engineering, it is used for a variety of operations and applications : from crunching raw numbers to simulating an entire physical system before a single wire gets soldered, the possibilities are endless.\
+If you've spent any time around circuit labs, embedded systems courses, or hardware prototyping benches, you've probably heard one name come up again and again: Matlab. It's got a reputation as the "engineer's calculator on steroids," and in various fields of engineering, it is used for a variety of operations and applications : from crunching raw numbers to simulating an entire physical system before a single wire gets soldered, the possibilities are endless.  
+
 
 **So what exactly is MATLAB?**
 

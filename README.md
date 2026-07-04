@@ -386,7 +386,7 @@ figure
 imhist(gray)
 ```
 <br />
-<img src=imgs/i6.png width="50%"> <br />
+<img src=imgs/i6.jpg width="50%"> <br />
 <img src=imgs/i7.png width="50%"> <br />
 
 Sometimes an image occupies only a small portion of the available intensity range (making it look washed out). **Histogram equalization** redistributes pixel values to span a wider range, increasing contrast.
@@ -562,8 +562,8 @@ points = detectSURFFeatures(img);
 showMatchedFeatures(img1, img2, matchedPoints1, matchedPoints2)
 ```
 <br />
-<img src=imgs/i18.png width="50%"> <br />
-<img src=imgs/i19.png width="50%"> <br />
+<img src=imgs/i18.jpg width="50%"> <br />
+<img src=imgs/i19.jpg width="50%"> <br />
 <img src=imgs/i20.png width="50%"> <br />
 
 However, if we take stock images, we might not find an accurate match. To really try this, I suggest you click photos from your phone of an object from different perspectives and see the magic unfold yourself.
@@ -637,6 +637,8 @@ detected = insertObjectAnnotation(img, 'rectangle', bbox, 'Face');
 % Display the result
 imshow(detected)
 ```
+<br />
+<img src=imgs/il1.png width="50%"> <br />
 
 ### 2. Histogram of Oriented Gradients (HOG) + SVM
 Rather than using simple intensity differences like Viola-Jones, HOG describes the shape of an object by analyzing the direction (orientation) of its edges.
@@ -660,6 +662,8 @@ imshow(img)
 hold on
 plot(visualization)
 ```
+<br />
+<img src=imgs/il2.png width="50%"> <br />
 
 Finally, if you don't know coding, you can use the MATLAB **Image Labeler** tool. It's relatively easy to use — it's an app you can use to draw labels around images. Check out the MATLAB help section for this app.
 

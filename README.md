@@ -174,7 +174,6 @@ With the electronics side covered, it's time to move up a level — from the cir
 
 # Image Processing in MATLAB
 
-*Draft 1*
 
 Now imagine Tom Cruise is trying to hunt the syndicate, and in order to do that he wants to copy someone's face. How will he be able to do that? You remember watching these scenes as he takes out a machine to scan the needed face and prepares a highly accurate-looking mask for him. This is all possible due to the concept of image processing.
 

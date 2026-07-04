@@ -313,8 +313,11 @@ subplot(2,2,2), imshow(gray), title('Grayscale')
 subplot(2,2,3), imshow(hsv), title('HSV')
 subplot(2,2,4), imshow(ycbcr), title('YCbCr')
 ```
+<br />
+<img src=imgs/i1.png width="50%"> <br />
 
-Following all the color corrections, we must also ensure that our camera is working properly. Sometimes when we put a camera in a machine, it tends to distort the image. Around the edges of the camera lens, the incoming light gets deviated, making the image look wider or thinner than it should be.
+Following all the color corrections, we must also ensure that our camera is working properly. Sometimes when we put a camera in a machine, it tends to distort the image. Around the edges of the camera lens, the incoming light gets deviated, making the image look wider or thinner than it should be. <br />
+<img src=imgs/i2.png width="50%"> <br />
 
 But MATLAB has you covered for this.
 
@@ -326,7 +329,8 @@ This is where the **Camera Calibrator App** in MATLAB comes in handy. For this, 
 The most common calibration method uses a checkerboard pattern because it has precisely known edges and corners that algorithms can detect automatically.
 
 ### The Calibration Process
-1. Capture multiple checkerboard images.
+1. Capture multiple checkerboard images. <br />
+<img src=imgs/i3.png width="50%"> <br />
 2. Import the images into the Camera Calibrator app.
 3. Detect checkerboard corners automatically.
 4. Estimate camera parameters.
@@ -349,6 +353,8 @@ figure
 imshowpair(img, corrected, 'montage')
 title('Original vs Undistorted')
 ```
+<br />
+<img src=imgs/i4.png width="50%"> <br />
 
 *This image is what we get when we directly use the lens calibration app. You can use the code and you'll get the same result. Since we have an app, we can simplify things — in this case, you have to pull the red bar down for image 5, as it's an outlier, and upload some more images. This is how you calibrate a camera.*
 
@@ -369,6 +375,8 @@ img = imread('cameraman.tif');
 adjusted = imadjust(img);
 imshowpair(img, adjusted, 'montage')
 ```
+<br />
+<img src=imgs/i5.png width="50%"> <br />
 
 A **histogram** is one of the most useful tools in image processing. Instead of showing where pixels are located, a histogram shows how many pixels have each intensity value.
 
@@ -377,6 +385,9 @@ gray = rgb2gray(imread('peppers.png'));
 figure
 imhist(gray)
 ```
+<br />
+<img src=imgs/i6.png width="50%"> <br />
+<img src=imgs/i7.png width="50%"> <br />
 
 Sometimes an image occupies only a small portion of the available intensity range (making it look washed out). **Histogram equalization** redistributes pixel values to span a wider range, increasing contrast.
 
@@ -390,6 +401,8 @@ imshowpair(gray, equalized, 'montage')
 enhanced = adapthisteq(gray);
 imshowpair(gray, enhanced, 'montage')
 ```
+<br />
+<img src=imgs/i8.png width="50%"> <br />
 
 As you can see in the above image, the difference is quite clear, and hence image processing is very important.
 
@@ -430,6 +443,8 @@ gray = rgb2gray(imread('scenery.png'));
 bw = imbinarize(gray);
 imshow(bw)
 ```
+<br />
+<img src=imgs/i9.png width="50%"> <br />
 
 ### 2. Otsu's Method
 Sometimes we can't manually decide on a threshold. Otsu's method calculates it automatically based on intensity distributions.
@@ -438,6 +453,8 @@ gray = rgb2gray(imread('scenery.png'));
 T = graythresh(gray);
 bw = imbinarize(gray, T);
 ```
+<br />
+<img src=imgs/i10.png width="50%"> <br />
 
 ### 3. Adaptive Thresholding
 Global thresholding assumes lighting is uniform. In practice (like scanning a document under a lamp), it rarely is.
@@ -445,6 +462,8 @@ Global thresholding assumes lighting is uniform. In practice (like scanning a do
 bw = imbinarize(gray, 'adaptive');
 imshow(bw)
 ```
+<br />
+<img src=imgs/i11.png width="50%"> <br />
 
 ### 4. Color-Based Segmentation
 Sometimes brightness isn't enough. We can convert the image to HSV and threshold just the Hue channel.
@@ -455,6 +474,8 @@ H = hsv(:,:,1);
 mask = H > 0.95 | H < 0.05; % Selecting a specific color range
 imshow(mask)
 ```
+<br />
+<img src=imgs/i12.png width="50%"> <br />
 
 ### 5. Advanced Techniques
 - **Region Growing**: Starts with seed points and adds neighboring pixels with similar properties to the same region.
@@ -464,6 +485,8 @@ img = imread('peppers.png');
 L = imsegkmeans(img, 3);
 imshow(label2rgb(L))
 ```
+<br />
+<img src=imgs/i13.png width="50%"> <br />
 
 > **Tip:** MATLAB includes an interactive **Image Segmenter App** that supports Thresholding, Graph Cut, K-Means, Active Contours, and Watershed segmentation. It even auto-generates the MATLAB code for you!
 
@@ -486,6 +509,8 @@ img = rgb2gray(imread('scenery.jpg'));
 edges = edge(img, 'Canny');
 imshow(edges)
 ```
+<br />
+<img src=imgs/i14.png width="50%"> <br />
 
 ### Corner Detection
 While edges define boundaries, corners uniquely identify locations (where intensity changes significantly in multiple directions).
@@ -497,6 +522,8 @@ imshow(img)
 hold on
 plot(corners)
 ```
+<br />
+<img src=imgs/i15.png width="50%"> <br />
 
 ### FAST Features
 FAST (Features from Accelerated Segment Test) is a modern, high-speed corner detector, perfect for real-time applications like drones and robotics.
@@ -515,6 +542,9 @@ imshow(img)
 hold on
 plot(points)
 ```
+<br />
+<img src=imgs/i16.png width="50%"> <br />
+<img src=imgs/i17.png width="50%"> <br />
 
 Now that we know how to see and find features in an image, the next step is to extract these features and use matching descriptors for them.
 
@@ -531,6 +561,10 @@ points = detectSURFFeatures(img);
 % Visualize Matches
 showMatchedFeatures(img1, img2, matchedPoints1, matchedPoints2)
 ```
+<br />
+<img src=imgs/i18.png width="50%"> <br />
+<img src=imgs/i19.png width="50%"> <br />
+<img src=imgs/i20.png width="50%"> <br />
 
 However, if we take stock images, we might not find an accurate match. To really try this, I suggest you click photos from your phone of an object from different perspectives and see the magic unfold yourself.
 

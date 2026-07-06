@@ -981,22 +981,42 @@ show(occMap)
 Everything above kept Ethan on one floor, using `stateSpaceSE2` — fine for ground robots, but drones and manipulators move through 3D space. Swap in `stateSpaceSE3` and `validatorOccupancyMap3D` and the same RRT workflow plans through a volume instead of a plane. The state vector grows to `[x y z qw qx qy qz]` — position plus a quaternion for orientation.
 
 ```matlab
-% omap is a pre-built occupancyMap3D of a city block
-ss = stateSpaceSE3([-20 220; -20 220; -10 100; ...
-                     inf inf; inf inf; inf inf; inf inf]);
+%% ---- 1. Build a synthetic city-block occupancyMap3D ----
+res = 1;
+omap = occupancyMap3D(res);
 
-sv = validatorOccupancyMap3D(ss,Map=omap,ValidationDistance=0.1);
+gridPoints = @(xlim,ylim,zlim,step) local_grid(xlim,ylim,zlim,step);
 
-planner = plannerRRT(ss,sv, ...
-    MaxConnectionDistance=50, ...
-    MaxIterations=1000, ...
-    GoalReachedFcn=@(~,s,g)(norm(s(1:3)-g(1:3))<1), ...
-    GoalBias=0.1);
+step = 1;
+buildings = {
+    [10  40], [10  60], [0  40];
+    [60  90], [100 140],[0  70];
+    [100 130],[20  50], [0  55];
+    [140 170],[60  100],[0  60];
+    [30  60], [150 190],[0  45];
+    [170 200],[150 190],[0  80];
+};
 
-start = [40 180 25 0.7 0.2 0 0.1];
-goal  = [150 33 35 0.3 0 0.1 0.6];
+for i = 1:size(buildings,1)
+    xlim = buildings{i,1}; ylim = buildings{i,2}; zlim = buildings{i,3};
+    [X,Y,Z] = ndgrid(xlim(1):step:xlim(2), ylim(1):step:ylim(2), zlim(1):step:zlim(2));
+    pts = [X(:) Y(:) Z(:)];
+    setOccupancy(omap, pts, 1);
+end
 
-[pathObj,solnInfo] = plan(planner,start,goal);
+groundPts_x = -20:2:220;
+groundPts_y = -20:2:220;
+groundPts_z = -10:2:-1;
+[X,Y,Z] = ndgrid(groundPts_x, groundPts_y, groundPts_z);
+setOccupancy(omap, [X(:) Y(:) Z(:)], 1);
+
+inflate(omap, 1);
+
+figure
+show(omap)
+axis equal
+view(45,30)
+title('Just the map')
 ```
 
 Same planner object, same `plan` call — just a different state space and validator underneath. That consistency is the toolbox's biggest practical strength: learn the RRT pattern once on a 2D map, and it transfers almost unchanged to 3D, or to a custom state space you define yourself.

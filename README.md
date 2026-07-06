@@ -940,41 +940,109 @@ Fusing the two — IMU for short-term smoothness, GPS for long-term correction �
 
 ## 4. SLAM: `lidarSLAM`
 
-Sometimes the team walks into a building with no schematic at all. The toolbox provides algorithms and analysis tools for simultaneous localization and mapping (SLAM), letting a robot build a map of an unknown environment while simultaneously tracking its own position in it. `lidarSLAM` takes lidar scans, attaches them to a node in a pose graph, and automatically detects loop closures to correct drift.
+Sometimes the team walks into a building with no schematic at all. The toolbox
+provides algorithms and analysis tools for simultaneous localization and mapping
+(SLAM), letting a robot build a map of an unknown environment while
+simultaneously tracking its own position in it. `lidarSLAM` takes lidar scans,
+attaches them to a node in a pose graph, and automatically detects loop closures
+to correct drift — for example, when the robot returns to a place it's already
+mapped.
 
 ```matlab
-maxLidarRange = 8;     % meters
-mapResolution = 20;    % cells per meter
+%% ---- 1. Build a simple synthetic environment (a square loop hallway) ----
+% 1 = wall (occupied), 0 = free space
+gridSize = 200;              % 200x200 cells
+res = 20;                    % cells per meter -> 10m x 10m environment
+mapMatrix = zeros(gridSize);
 
-slamAlg = lidarSLAM(mapResolution,maxLidarRange);
-slamAlg.LoopClosureThreshold = 360;
+% Outer walls
+mapMatrix(1:5, :) = 1;
+mapMatrix(end-4:end, :) = 1;
+mapMatrix(:, 1:5) = 1;
+mapMatrix(:, end-4:end) = 1;
+
+% Inner block (creates a loop/corridor the robot drives around)
+mapMatrix(60:140, 60:140) = 1;
+
+trueMap = occupancyMap(mapMatrix, res);
+
+figure
+show(trueMap)
+title('Ground-truth environment (unknown to SLAM)')
+
+%% ---- 2. Define a robot trajectory that loops back to its start ----
+% Waypoints tracing a loop around the inner block, ending near the start
+waypoints = [1.5 1.5;
+             8.5 1.5;
+             8.5 8.5;
+             1.5 8.5;
+             1.5 1.5;   % back near start -> triggers loop closure
+             8.5 1.5];  % go around a 2nd time for a stronger loop closure
+
+% Interpolate a smooth, densely-sampled path with heading
+numSamples = 200;
+t = linspace(1,size(waypoints,1),numSamples);
+xy = interp1(1:size(waypoints,1), waypoints, t, 'linear');
+headings = [atan2(diff(xy(:,2)), diff(xy(:,1))); 0];
+headings(end) = headings(end-1);
+poses = [xy headings];
+
+%% ---- 3. Simulate lidar scans along the trajectory using rangeSensor ----
+maxLidarRange = 8;
+mapResolution = res;
+
+rs = rangeSensor;
+rs.Range = [0 maxLidarRange];
+rs.HorizontalAngle = [-pi pi];
+rs.HorizontalAngleResolution = deg2rad(1);   % 1-degree resolution scan
+
+slamAlg = lidarSLAM(mapResolution, maxLidarRange);
+slamAlg.LoopClosureThreshold = 200;
 slamAlg.LoopClosureSearchRadius = 8;
 
-% In a real application "scans" comes from your robot's lidar driver.
-% Here we build a small cell array of lidarScan objects from raw
-% ranges/angles, the same shape your sensor data would arrive in:
-angles = deg2rad(-90:1:90);   % a 180-degree sweep
-numScans = 5;
-scans = cell(numScans,1);
-for i = 1:numScans
-    ranges = 5 + 0.1*i + 0.05*randn(size(angles));  % synthetic noisy ranges
-    scans{i} = lidarScan(ranges,angles);
+figure
+for i = 1:size(poses,1)
+    pose = poses(i,:);
+    
+    % Simulate a real lidar reading against the ground-truth map
+    [ranges, angles] = rs(pose, trueMap);
+    scan = lidarScan(ranges, angles);
+    
+    [isScanAccepted, loopClosureInfo, optimizationInfo] = addScan(slamAlg, scan);
+    
+    if isScanAccepted
+        % Redraw periodically (every few scans, not every single one, for speed)
+        if mod(i,5)==0 || i==size(poses,1)
+            show(slamAlg);
+            title(['Building map... scan ', num2str(i), ' of ', num2str(size(poses,1))])
+            drawnow
+        end
+        if ~isempty(loopClosureInfo.EdgeIDs)
+            fprintf('Loop closure detected at scan %d!\n', i);
+        end
+    end
 end
 
-% Feed each scan into the SLAM object
-for i = 1:numel(scans)
-    addScan(slamAlg,scans{i});
-end
+%% ---- 4. Final SLAM map + trajectory ----
+figure
+show(slamAlg)
+title('Final SLAM pose graph + scans')
 
-show(slamAlg)   % view the built map + pose graph
+[scansSLAM, optimizedPoses] = scansAndPoses(slamAlg);
+occMap = buildMap(scansSLAM, optimizedPoses, mapResolution, maxLidarRange);
 
-% Convert the SLAM result into a standard occupancy map
-[scansSLAM,poses] = scansAndPoses(slamAlg);
-occMap = buildMap(scansSLAM,poses,mapResolution,maxLidarRange);
+figure
 show(occMap)
+hold on
+plot(optimizedPoses(:,1), optimizedPoses(:,2), 'r-', 'LineWidth',2)
+title('Reconstructed occupancy map + optimized robot trajectory')
 ```
-
-`lidarScan(ranges,angles)` is what turns raw sensor readings into the object `addScan` expects. On real hardware, `ranges` and `angles` come straight from your lidar driver (or a ROS `LaserScan` message); the loop above just stands in for that data source so the snippet runs end-to-end.
+`rangeSensor` simulates what a real 2D lidar would return by casting rays
+against the environment and computing `ranges`/`angles` at each pose — this is
+what stands in for your robot's live lidar driver (or a ROS `LaserScan` message)
+in this demo. On real hardware you'd skip the simulation step entirely and feed
+`addScan` the `ranges`/`angles` your sensor publishes directly, in the same
+`lidarScan(ranges, angles)` format used here.
 
 ## 5. Going 3D: `stateSpaceSE3`
 

@@ -1037,6 +1037,13 @@ hold on
 plot(optimizedPoses(:,1), optimizedPoses(:,2), 'r-', 'LineWidth',2)
 title('Reconstructed occupancy map + optimized robot trajectory')
 ```
+
+<img src="imgs/slamRendering.png" width="50%"/>
+
+
+<img src="imgs/slamRendered.png" width="50%"/>
+
+
 `rangeSensor` simulates what a real 2D lidar would return by casting rays
 against the environment and computing `ranges`/`angles` at each pose — this is
 what stands in for your robot's live lidar driver (or a ROS `LaserScan` message)
@@ -1084,8 +1091,10 @@ figure
 show(omap)
 axis equal
 view(45,30)
-title('Just the map')
+title('3D Map')
 ```
+
+<img src="imgs/3Dmap.png" width="50%"/>
 
 Same planner object, same `plan` call — just a different state space and validator underneath. That consistency is the toolbox's biggest practical strength: learn the RRT pattern once on a 2D map, and it transfers almost unchanged to 3D, or to a custom state space you define yourself.
 
